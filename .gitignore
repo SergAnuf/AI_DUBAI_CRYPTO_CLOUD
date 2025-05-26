@@ -1,2 +1,8 @@
 .chatbot_env
 .env
+.qodo
+__pycache__
+cache
+data
+pandasai.log
+exports
