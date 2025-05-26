@@ -1,11 +1,10 @@
 import streamlit as st
 from dotenv import load_dotenv
 import os
-from data_processing import load_and_preprocess_data
-from pandasai_helper import PandasAIAssistant
 import pandas as pd
+from src.tools import visualize_tool, safe_dataframe_tool
+from src.classifiers import llm_classifier, is_uae_real_estate_query
 
-# Load environment variables
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
 
@@ -14,63 +13,50 @@ st.set_page_config(page_title="UAE Real Estate Chat", layout="wide")
 st.title("🏠 UAE Real Estate Chat Assistant")
 st.write("Ask questions about the UAE real estate market data")
 
-@st.cache_resource
-def initialize_assistant():
-    """
-    Initialize the PandasAI assistant with cached data
-    """
-    try:
-        df = load_and_preprocess_data("data/uae_real_estate_2024.csv")
-        return PandasAIAssistant(api_key, df)
-    except Exception as e:
-        st.error(f"Initialization error: {e}")
-        return None
+query = st.text_input("Enter your real estate query:")
 
-# Initialize assistant
-if not api_key:
-    st.error("API key not found. Check your .env file and variable name.")
-    st.stop()
 
-assistant = initialize_assistant()
+def main_agent(query: str):
+    if not is_uae_real_estate_query(query):
+        return {"type": "output", "data": "This is an irrelevant question to UAE property."}
 
-if not assistant:
-    st.stop()
+    data = safe_dataframe_tool(query)
+    if isinstance(data, dict) and data.get("error"):
+        return data
 
-# Chat interface
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+    action = llm_classifier(query)
 
-# Display chat messages
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+    if action == "output":
+        return {"type": "data", "data": data}
 
-# Accept user input
-if prompt := st.chat_input("Ask a question about the UAE real estate data"):
-    # Add user message to chat history
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    
-    # Display user message
-    with st.chat_message("user"):
-        st.markdown(prompt)
-    
-    # Get assistant response
-    with st.spinner("Analyzing data..."):
-        response = assistant.chat(prompt)
-    print(type(response))
-    # Display assistant response
-    with st.chat_message("assistant"):
-        if isinstance(response, str):
-            st.markdown(response)
-        elif isinstance(response, pd.DataFrame):
-            st.dataframe(response)
-        elif hasattr(response, "figure"):  # matplotlib/plotly figures
-            st.pyplot(response)
-        elif hasattr(response, "__html__"):  # Plotly chart or other embeddable HTML
-            st.components.v1.html(response.__html__(), height=600)
-        else:
-            st.write(response)
-    
-    # Save assistant response (stringify if necessary)
-    response_content = response if isinstance(response, str) else str(response)
-    st.session_state.messages.append({"role": "assistant", "content": response_content})
+    elif action == "plot_stats":
+        result = visualize_tool.invoke({"data": data, "query": query})
+        return {"type": "plot", **result}
+
+    elif action == "geospatial_plot":
+        return {"error": "Geospatial plotting tool not implemented yet."}
+
+    else:
+        return {"error": f"Unknown action '{action}' from classifier."}
+
+
+if query:
+    with st.spinner("Processing your query..."):
+        result = main_agent(query)
+
+    if result.get("error"):
+        st.error(result["error"])
+
+    elif result["type"] == "output":
+        st.info(result["data"])
+
+    elif result["type"] == "data":
+        st.success("Here is the data related to your query:")
+        st.dataframe(result["data"])
+
+    elif result["type"] == "plot":
+        image_buf = result.get("image_bytes")
+        st.image(image_buf, use_column_width=True)
+     
+    else:
+        st.warning("Unexpected result type received.")
