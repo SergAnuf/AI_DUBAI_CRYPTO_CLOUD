@@ -1,7 +1,7 @@
 .chatbot_env
 .env
 .qodo
-__pycache__
+__pycache__/
 cache
 data
 pandasai.log
