@@ -1,7 +1,6 @@
 # Standard libraries
 import os
 import io
-import base64
 from typing import Dict, Any
 
 # Third-party libraries
@@ -63,7 +62,7 @@ Returns tuple:
 
 """
 
-PATH_DATA = r"/home/zcemg08/projects/chatbot/data/uae_real_estate_2024.csv"
+PATH_DATA = "../data/uae_real_estate_2024.csv"
 
 
 
