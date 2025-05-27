@@ -2,34 +2,27 @@
 platform linux -- Python 3.12.3, pytest-8.3.5, pluggy-1.6.0
 rootdir: /home/zcemg08/projects/chatbot
 plugins: Faker-19.13.0, langsmith-0.3.42, anyio-4.9.0
-collected 3 items
+collected 10 items
 
-tests/test_agent.py ..F                                                  [100%]
+tests/test_agent.py .........F                                           [100%]
 
 =================================== FAILURES ===================================
 ________________________ test_main_agent_dynamic[case2] ________________________
 
-case = {'expected_substring': 'Unknown action', 'expected_type': None, 'query': 'Trigger unknown action somehow'}
+case = {'expected_type': 'plot', 'query': 'Show distributi'}
 
     @pytest.mark.parametrize("case", test_agent_output_type)
     def test_main_agent_dynamic(case):
+        "Test to see if the main agent returns the expected output type for various queries."
         result = main_agent(case["query"])
-        print(result)
         if case["expected_type"]:
-            assert result["type"] == case["expected_type"]
-    
-        if case["expected_substring"]:
-            data = result.get("data", "") or result.get("error", "")
->           assert case["expected_substring"].lower() in data.lower()
-E           AssertionError: assert 'unknown action' in 'this is an irrelevant question to uae property.'
-E            +  where 'unknown action' = <built-in method lower of str object at 0x7b25edabcb30>()
-E            +    where <built-in method lower of str object at 0x7b25edabcb30> = 'Unknown action'.lower
-E            +  and   'this is an irrelevant question to uae property.' = <built-in method lower of str object at 0x7b25eda88cf0>()
-E            +    where <built-in method lower of str object at 0x7b25eda88cf0> = 'This is an irrelevant question to UAE property.'.lower
+>           assert result["type"] == case["expected_type"]
+E           AssertionError: assert 'output' == 'plot'
+E             
+E             - plot
+E             + output
 
-tests/test_agent.py:30: AssertionError
------------------------------ Captured stdout call -----------------------------
-{'type': 'output', 'data': 'This is an irrelevant question to UAE property.'}
+tests/test_agent.py:38: AssertionError
 =============================== warnings summary ===============================
 .chatbot_env/lib/python3.12/site-packages/pydantic/_internal/_config.py:323
 .chatbot_env/lib/python3.12/site-packages/pydantic/_internal/_config.py:323
@@ -40,12 +33,17 @@ tests/test_agent.py:30: AssertionError
   /home/zcemg08/projects/chatbot/.chatbot_env/lib/python3.12/site-packages/astor/op_util.py:92: DeprecationWarning: ast.Num is deprecated and will be removed in Python 3.14; use ast.Constant instead
     precedence_data = dict((getattr(ast, x, None), z) for x, y, z in op_data)
 
-tests/test_agent.py::test_main_agent_dynamic[case1]
+tests/test_agent.py::test_main_agent_does_not_crash[Show average price in Dubai Marina]
   /home/zcemg08/projects/chatbot/src/agent.py:10: LangChainDeprecationWarning: The method `BaseTool.__call__` was deprecated in langchain-core 0.1.47 and will be removed in 1.0. Use :meth:`~invoke` instead.
     data = safe_dataframe_tool(query)
+
+tests/test_agent.py::test_main_agent_does_not_crash[Show distribution of property prices in Dubai]
+  /home/zcemg08/projects/chatbot/.chatbot_env/lib/python3.12/site-packages/kaleido/scopes/base.py:188: DeprecationWarning:
+  
+  setDaemon() is deprecated, set the daemon attribute instead
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 -------- generated xml file: /home/zcemg08/projects/chatbot/results.xml --------
 =========================== short test summary info ============================
 FAILED tests/test_agent.py::test_main_agent_dynamic[case2] - AssertionError: ...
-=================== 1 failed, 2 passed, 4 warnings in 6.32s ====================
+=================== 1 failed, 9 passed, 5 warnings in 49.10s ===================
