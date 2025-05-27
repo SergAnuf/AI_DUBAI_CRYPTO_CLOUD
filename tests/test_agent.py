@@ -1,27 +1,29 @@
 from src.agent import main_agent
 import pytest
-from tests.query_versions import QUERIES
+# from tests.query_versions import QUERIES
+from pathlib import Path
 
 
-def id_fn(query_entry):
-    # Stable ID based on version + query text hash
-    return f"v{query_entry['version']}_{hash(query_entry['text'])}"
+def load_queries():
+    query_file = Path("tests/queries.txt")
+    queries = query_file.read_text().splitlines()
+    return [(q, f"line_{i+1}") for i, q in enumerate(queries) if q.strip()]
 
 
-############ Test to see whatever query does not crash the main agent. #####################
-@pytest.mark.parametrize(
-    "query",
-    [q["text"] for q in QUERIES],  # Pass just the text to the test
-    ids=[id_fn(q) for q in QUERIES]  # But use versioned IDs for tracking
-)
-def test_main_agent_does_not_crash(query):
+@pytest.mark.parametrize("query,query_id", load_queries(), ids=lambda x: x[1])
+def test_main_agent(query, query_id):
     try:
         result = main_agent(query)
         assert result is not None
     except Exception as e:
-        pytest.fail(f"Agent crashed for '{query}': {e}")
-        
-        
+        pytest.fail(f"Failed: {query}")
+
+# Force testmon to track the queries file
+def pytest_sessionstart(session):
+    session.config.testmon.addchange("tests/queries.txt")
+
+
+
 
 ##### Test to see if the main agent returns the expected output type for various queries.######
 
