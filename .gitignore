@@ -8,3 +8,4 @@ pandasai.log
 exports
 .pytest_cache
 chatbot.egg-info
+.testmondata
