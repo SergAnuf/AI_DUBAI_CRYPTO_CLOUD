@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="3" time="6.324" timestamp="2025-05-27T10:40:59.262232+04:00" hostname="zcemg08-Vivobook-ASUSLaptop-K3605ZC-K3605ZC"><testcase classname="tests.test_agent" name="test_main_agent_dynamic[case0]" time="0.958" /><testcase classname="tests.test_agent" name="test_main_agent_dynamic[case1]" time="1.562" /><testcase classname="tests.test_agent" name="test_main_agent_dynamic[case2]" time="0.494"><failure message="AssertionError: assert 'unknown action' in 'this is an irrelevant question to uae property.'&#10; +  where 'unknown action' = &lt;built-in method lower of str object at 0x7b25edabcb30&gt;()&#10; +    where &lt;built-in method lower of str object at 0x7b25edabcb30&gt; = 'Unknown action'.lower&#10; +  and   'this is an irrelevant question to uae property.' = &lt;built-in method lower of str object at 0x7b25eda88cf0&gt;()&#10; +    where &lt;built-in method lower of str object at 0x7b25eda88cf0&gt; = 'This is an irrelevant question to UAE property.'.lower">case = {'expected_substring': 'Unknown action', 'expected_type': None, 'query': 'Trigger unknown action somehow'}
+
+    @pytest.mark.parametrize("case", test_agent_output_type)
+    def test_main_agent_dynamic(case):
+        result = main_agent(case["query"])
+        print(result)
+        if case["expected_type"]:
+            assert result["type"] == case["expected_type"]
+    
+        if case["expected_substring"]:
+            data = result.get("data", "") or result.get("error", "")
+&gt;           assert case["expected_substring"].lower() in data.lower()
+E           AssertionError: assert 'unknown action' in 'this is an irrelevant question to uae property.'
+E            +  where 'unknown action' = &lt;built-in method lower of str object at 0x7b25edabcb30&gt;()
+E            +    where &lt;built-in method lower of str object at 0x7b25edabcb30&gt; = 'Unknown action'.lower
+E            +  and   'this is an irrelevant question to uae property.' = &lt;built-in method lower of str object at 0x7b25eda88cf0&gt;()
+E            +    where &lt;built-in method lower of str object at 0x7b25eda88cf0&gt; = 'This is an irrelevant question to UAE property.'.lower
+
+tests/test_agent.py:30: AssertionError</failure></testcase></testsuite></testsuites>

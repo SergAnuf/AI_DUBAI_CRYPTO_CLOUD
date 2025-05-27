@@ -62,7 +62,10 @@ Returns tuple:
 
 """
 
-PATH_DATA = "../data/uae_real_estate_2024.csv"
+# PATH_DATA = "../data/uae_real_estate_2024.csv"
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PATH_DATA = os.path.join(BASE_DIR, "..", "data", "uae_real_estate_2024.csv")
 
 
 
