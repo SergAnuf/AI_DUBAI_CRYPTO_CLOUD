@@ -1,14 +1,1 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="10" time="49.105" timestamp="2025-05-27T11:36:30.728135+04:00" hostname="zcemg08-Vivobook-ASUSLaptop-K3605ZC-K3605ZC"><testcase classname="tests.test_agent" name="test_main_agent_does_not_crash[Just checking if this runs]" time="0.950" /><testcase classname="tests.test_agent" name="test_main_agent_does_not_crash[Show average price in Dubai Marina]" time="2.687" /><testcase classname="tests.test_agent" name="test_main_agent_does_not_crash[What is the weather in Paris?]" time="1.060" /><testcase classname="tests.test_agent" name="test_main_agent_does_not_crash[Trigger unknown action somehow]" time="0.614" /><testcase classname="tests.test_agent" name="test_main_agent_does_not_crash[List properties under 1 million AED]" time="5.617" /><testcase classname="tests.test_agent" name="test_main_agent_does_not_crash[Show distribution of property prices in Dubai]" time="22.516" /><testcase classname="tests.test_agent" name="test_main_agent_does_not_crash[What is the average rent in Abu Dhabi?]" time="10.784" /><testcase classname="tests.test_agent" name="test_main_agent_dynamic[case0]" time="0.637" /><testcase classname="tests.test_agent" name="test_main_agent_dynamic[case1]" time="1.632" /><testcase classname="tests.test_agent" name="test_main_agent_dynamic[case2]" time="0.419"><failure message="AssertionError: assert 'output' == 'plot'&#10;  &#10;  - plot&#10;  + output">case = {'expected_type': 'plot', 'query': 'Show distributi'}
-
-    @pytest.mark.parametrize("case", test_agent_output_type)
-    def test_main_agent_dynamic(case):
-        "Test to see if the main agent returns the expected output type for various queries."
-        result = main_agent(case["query"])
-        if case["expected_type"]:
-&gt;           assert result["type"] == case["expected_type"]
-E           AssertionError: assert 'output' == 'plot'
-E             
-E             - plot
-E             + output
-
-tests/test_agent.py:38: AssertionError</failure></testcase></testsuite></testsuites>
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="5" time="58.255" timestamp="2025-05-27T14:19:58.484435+04:00" hostname="zcemg08-Vivobook-ASUSLaptop-K3605ZC-K3605ZC"><testcase classname="tests.test_agent" name="test_main_agent_does_not_crash[v1_2281367071791442038]" time="0.842" /><testcase classname="tests.test_agent" name="test_main_agent_does_not_crash[v1_5964042049761918890]" time="1.114" /><testcase classname="tests.test_agent" name="test_main_agent_does_not_crash[v1_4957704322346361020]" time="52.251" /><testcase classname="tests.test_agent" name="test_main_agent_does_not_crash[v1_-5179547086308954210]" time="1.511" /><testcase classname="tests.test_agent" name="test_main_agent_does_not_crash[v2_-8393795553441931217]" time="0.394" /></testsuite></testsuites>
