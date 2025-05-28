@@ -65,8 +65,8 @@ Returns tuple:
 # PATH_DATA = "../data/uae_real_estate_2024.csv"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PATH_DATA = os.path.join(BASE_DIR, "..", "data", "uae_real_estate_2024.csv")
-
+# PATH_DATA = os.path.join(BASE_DIR, "..", "data", "uae_real_estate_2024.csv")
+PATH_DATA = os.path.join(BASE_DIR,"..", "data", "uae_real_estate_2024_geo_ready.parquet")
 
 
 @tool(description=DESCRIPTION_SELECT_CALCULATE)
@@ -80,7 +80,8 @@ def safe_dataframe_tool(
     try:
         # Configure with error correction
         llm = pandas_ai
-        data = change_data_type(pd.read_csv(PATH_DATA))
+        # data = change_data_type(pd.read_csv(PATH_DATA))
+        data = pd.read_parquet(PATH_DATA)
         smart_df = SmartDataframe(data, config={
             "llm": llm,
             "open_charts": False,
@@ -152,48 +153,6 @@ def create_plot_code(data: list[dict], query: str) -> str:
     return code
     
     
-
-
-# @tool(description=DESCRIPTION_PLOT)
-# def visualize_tool(data: list[dict], query: str) -> dict:
-#     """Executes plotting code and returns results"""
-#     try:
-#         code = create_plot_code(data, query)
-#         df = pd.DataFrame(data)
-        
-#         # Safe execution environment
-#         exec_globals = {
-#             "pd": pd,
-#             "px": px,
-#             "go": go,
-#             "data": data,
-#             "df": df
-#         }
-#         exec(code, exec_globals)
-        
-#         fig = exec_globals.get("fig")
-#         if fig is None:
-#             raise ValueError("No figure was created - missing 'fig' variable")
-            
-#         # Convert plot to base64 image
-#         buf = io.BytesIO()
-#         if hasattr(fig, "write_image"):  # Plotly
-#             fig.write_image(buf, format="png")
-#         else:
-#             raise ValueError(f"Unsupported figure type: {type(fig)}")
-            
-#         return {
-#             "image": base64.b64encode(buf.getvalue()).decode("utf-8"),
-#             "code": code,
-#             "success": True
-#         }
-        
-#     except Exception as e:
-#         return {
-#             "error": str(e),
-#             "code": code if 'code' in locals() else "",
-#             "success": False
-#         }
         
         
 @tool(description=DESCRIPTION_PLOT)

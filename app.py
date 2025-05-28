@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from src.agent import main_agent
+import streamlit.components.v1 as components
 
 
 # Set up the page "HELLO WORLD"
@@ -28,6 +29,10 @@ if query:
     elif result["type"] == "plot":
         image_buf = result.get("image_bytes")
         st.image(image_buf, use_column_width=True)
+        
+    elif result["type"] == "html":
+        html_code = result.get("content")
+        components.html(html_code, height=600)
      
     else:
         st.warning("Unexpected result type received.")
