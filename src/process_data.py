@@ -13,5 +13,7 @@ def change_data_type(data):
     df['sizeMin'] = pd.to_numeric(df['sizeMin'], errors='coerce')  # Likely numeric
     df['furnishing'] = df['furnishing'].astype('category')  # 3 values: YES, NO, PARTLY
     df['description'] = df['description'].astype('string')  # Free-text column
+    df["displayAddress"] = df["displayAddress"].astype("string")  # Free-text column
+    df["title"] = df["title"].astype("string")  # Free-text column
     
     return df

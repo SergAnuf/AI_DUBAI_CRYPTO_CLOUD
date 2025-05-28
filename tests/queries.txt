@@ -2,3 +2,5 @@ Just checking if this runs
 Show average price in Dubai Marina
 Compare prices in Dubai Marina vs Downtown
 List luxury villas in Palm Jumeirah
+Show on map properties in Dubai with 3 bedrooms and a budget of 1 million AED.
+Show on map properties in Dubai with 3 bedrooms

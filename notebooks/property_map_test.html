@@ -1,0 +1,94 @@
+
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>Properties Map</title>
+        <style>
+            body, html { height: 100%; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+            #map { height: 100%; width: 100%; }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+        <script>
+          function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 13,
+              center: { lat: 25.08924736, lng: 55.172970299999996 }
+            });
+            
+        var marker_0 = new google.maps.Marker({
+            position: { lat: 25.1861089, lng: 55.2861562 },
+            map: map
+        });
+
+        var infowindow_0 = new google.maps.InfoWindow({
+            content: `<div style="font-size: 16px; font-weight: bold;">Great ROI I High Floor I Creek View</div>`
+        });
+
+        marker_0.addListener('click', function() {
+            infowindow_0.open(map, marker_0);
+        });
+        
+
+        var marker_1 = new google.maps.Marker({
+            position: { lat: 25.0797349, lng: 55.1343655 },
+            map: map
+        });
+
+        var infowindow_1 = new google.maps.InfoWindow({
+            content: `<div style="font-size: 16px; font-weight: bold;">Full Sea View | Beach Life | Brand New Residence</div>`
+        });
+
+        marker_1.addListener('click', function() {
+            infowindow_1.open(map, marker_1);
+        });
+        
+
+        var marker_9 = new google.maps.Marker({
+            position: { lat: 25.02109, lng: 55.1403949 },
+            map: map
+        });
+
+        var infowindow_9 = new google.maps.InfoWindow({
+            content: `<div style="font-size: 16px; font-weight: bold;">Fully Furnished | Smart Home | High Floor</div>`
+        });
+
+        marker_9.addListener('click', function() {
+            infowindow_9.open(map, marker_9);
+        });
+        
+
+        var marker_10 = new google.maps.Marker({
+            position: { lat: 25.0705937, lng: 55.1572074 },
+            map: map
+        });
+
+        var infowindow_10 = new google.maps.InfoWindow({
+            content: `<div style="font-size: 16px; font-weight: bold;">VOT / Single Row / Private Pool / Landscaped / Furnished</div>`
+        });
+
+        marker_10.addListener('click', function() {
+            infowindow_10.open(map, marker_10);
+        });
+        
+
+        var marker_13 = new google.maps.Marker({
+            position: { lat: 25.0887093, lng: 55.1467275 },
+            map: map
+        });
+
+        var infowindow_13 = new google.maps.InfoWindow({
+            content: `<div style="font-size: 16px; font-weight: bold;">Sea View | Move In Ready | Great Location</div>`
+        });
+
+        marker_13.addListener('click', function() {
+            infowindow_13.open(map, marker_13);
+        });
+        
+          }
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQfhzMsH2pmsCHXJNBXrgkeIw43UUTH8U&callback=initMap" async defer></script>
+    </body>
+    </html>
+    

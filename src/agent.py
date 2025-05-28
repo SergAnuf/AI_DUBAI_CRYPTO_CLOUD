@@ -1,5 +1,6 @@
 from src.tools import visualize_tool, safe_dataframe_tool
 from src.classifiers import llm_classifier, is_uae_real_estate_query
+from src.geo_tools import generate_google_maps_html
 
 "Main agent function to handle user queries related to UAE real estate."
 
@@ -21,7 +22,8 @@ def main_agent(query: str):
         return {"type": "plot", **result}
 
     elif action == "geospatial_plot":
-        return {"error": "Geospatial plotting tool not implemented yet."}
+        result = generate_google_maps_html(data)
+        return {"type": "html","content": result}
 
     else:
         return {"error": f"Unknown action '{action}' from classifier."}
