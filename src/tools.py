@@ -21,8 +21,8 @@ from src.process_data import change_data_type
 import pandasai.llm
 import openai
 
-# Usage:
-pandas_ai = pandasai.llm.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Usage in 25 defined model used for pandas ai:
+pandas_ai = pandasai.llm.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))  
 official_ai = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
@@ -66,7 +66,7 @@ Returns tuple:
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # PATH_DATA = os.path.join(BASE_DIR, "..", "data", "uae_real_estate_2024.csv")
-PATH_DATA = os.path.join(BASE_DIR,"..", "data", "uae_real_estate_2024_geo_ready.parquet")
+PATH_DATA = os.path.join(BASE_DIR,"..", "data", "uae_real_estate_2024_geo_ready2.parquet")
 
 
 @tool(description=DESCRIPTION_SELECT_CALCULATE)

@@ -15,5 +15,6 @@ def change_data_type(data):
     df['description'] = df['description'].astype('string')  # Free-text column
     df["displayAddress"] = df["displayAddress"].astype("string")  # Free-text column
     df["title"] = df["title"].astype("string")  # Free-text column
+    df["City"] = df["displayAddress"].apply(lambda x: x.split(",")[-1].strip()) # add city column
     
     return df

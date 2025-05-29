@@ -1,0 +1,5 @@
+show on map abu dabi flats under 2 million AED and 1 bedroom
+find 10 cheapest 3 bedroom flats in Dubai and sort them in ascending order and show them on map [FAIL: wrong flat count shown]
+find 10 cheapest 3 bedroom flats in Dubai and show them on map [FAIL: wrong flat count shown]
+list 10 cheapest 3 bedroom flats in Dubai [PASS :gives correct dataframe]
+list 1 bedroom properties added in march 2024 in Dubai [PASS: code inspection - pandas_log 35948]
