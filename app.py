@@ -2,12 +2,14 @@ import streamlit as st
 import pandas as pd
 from src.agent import main_agent
 import streamlit.components.v1 as components
+from src.utils.env_tools import is_running_in_streamlit
 
 
 # Set up the page "HELLO WORLD"
 st.set_page_config(page_title="UAE Real Estate Chat", layout="wide")
 st.title("🏠 UAE Real Estate Chat Assistant")
 st.write("Ask questions about the UAE real estate market data")
+# st.write(f"Running in Streamlit? {is_running_in_streamlit()}")
 
 query = st.text_input("Enter your real estate query:")
 
