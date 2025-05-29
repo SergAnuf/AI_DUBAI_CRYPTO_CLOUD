@@ -1,1 +1,1547 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="4" time="82.602" timestamp="2025-05-27T17:38:08.925978+04:00" hostname="zcemg08-Vivobook-ASUSLaptop-K3605ZC-K3605ZC"><testcase classname="tests.test_agent" name="test_main_agent[line_1]" time="1.142" /><testcase classname="tests.test_agent" name="test_main_agent[line_2]" time="2.010" /><testcase classname="tests.test_agent" name="test_main_agent[line_3]" time="74.852" /><testcase classname="tests.test_agent" name="test_main_agent[line_4]" time="2.289" /></testsuite></testsuites>
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="14" skipped="0" tests="100" time="1569.565" timestamp="2025-05-29T14:58:01.878493+04:00" hostname="zcemg08-Vivobook-ASUSLaptop-K3605ZC-K3605ZC"><testcase classname="tests.test_agent" name="test_main_agent[line_1]" time="11.750" /><testcase classname="tests.test_agent" name="test_main_agent[line_2]" time="13.873" /><testcase classname="tests.test_agent" name="test_main_agent[line_3]" time="17.276" /><testcase classname="tests.test_agent" name="test_main_agent[line_4]" time="16.377" /><testcase classname="tests.test_agent" name="test_main_agent[line_5]" time="9.049"><failure message="Failed: Failed: create pie chart of properties available in Ajman, grouped by the number of rooms">self = Index(['bedrooms', 'count'], dtype='object'), key = 'latitude'
+
+    def get_loc(self, key):
+        """
+        Get integer location, slice or boolean mask for requested label.
+    
+        Parameters
+        ----------
+        key : label
+    
+        Returns
+        -------
+        int if unique index, slice if monotonic index, else mask
+    
+        Examples
+        --------
+        &gt;&gt;&gt; unique_index = pd.Index(list('abc'))
+        &gt;&gt;&gt; unique_index.get_loc('b')
+        1
+    
+        &gt;&gt;&gt; monotonic_index = pd.Index(list('abbc'))
+        &gt;&gt;&gt; monotonic_index.get_loc('b')
+        slice(1, 3, None)
+    
+        &gt;&gt;&gt; non_monotonic_index = pd.Index(list('abcb'))
+        &gt;&gt;&gt; non_monotonic_index.get_loc('b')
+        array([False,  True, False,  True])
+        """
+        casted_key = self._maybe_cast_indexer(key)
+        try:
+&gt;           return self._engine.get_loc(casted_key)
+
+.chatbot_env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3805: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+index.pyx:167: in pandas._libs.index.IndexEngine.get_loc
+    ???
+index.pyx:196: in pandas._libs.index.IndexEngine.get_loc
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7081: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+&gt;   ???
+E   KeyError: 'latitude'
+
+pandas/_libs/hashtable_class_helper.pxi:7089: KeyError
+
+The above exception was the direct cause of the following exception:
+
+query = 'create pie chart of properties available in Ajman, grouped by the number of rooms'
+query_id = 'line_5'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+&gt;           result = main_agent(query)
+
+tests/test_agent.py:16: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/agent.py:25: in main_agent
+    result = generate_google_maps_html(data)
+src/geo_tools.py:57: in generate_google_maps_html
+    position: {{ lat: {row['latitude']}, lng: {row['longitude']} }},
+.chatbot_env/lib/python3.12/site-packages/pandas/core/series.py:1121: in __getitem__
+    return self._get_value(key)
+.chatbot_env/lib/python3.12/site-packages/pandas/core/series.py:1237: in _get_value
+    loc = self.index.get_loc(label)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Index(['bedrooms', 'count'], dtype='object'), key = 'latitude'
+
+    def get_loc(self, key):
+        """
+        Get integer location, slice or boolean mask for requested label.
+    
+        Parameters
+        ----------
+        key : label
+    
+        Returns
+        -------
+        int if unique index, slice if monotonic index, else mask
+    
+        Examples
+        --------
+        &gt;&gt;&gt; unique_index = pd.Index(list('abc'))
+        &gt;&gt;&gt; unique_index.get_loc('b')
+        1
+    
+        &gt;&gt;&gt; monotonic_index = pd.Index(list('abbc'))
+        &gt;&gt;&gt; monotonic_index.get_loc('b')
+        slice(1, 3, None)
+    
+        &gt;&gt;&gt; non_monotonic_index = pd.Index(list('abcb'))
+        &gt;&gt;&gt; non_monotonic_index.get_loc('b')
+        array([False,  True, False,  True])
+        """
+        casted_key = self._maybe_cast_indexer(key)
+        try:
+            return self._engine.get_loc(casted_key)
+        except KeyError as err:
+            if isinstance(casted_key, slice) or (
+                isinstance(casted_key, abc.Iterable)
+                and any(isinstance(x, slice) for x in casted_key)
+            ):
+                raise InvalidIndexError(key)
+&gt;           raise KeyError(key) from err
+E           KeyError: 'latitude'
+
+.chatbot_env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3812: KeyError
+
+During handling of the above exception, another exception occurred:
+
+query = 'create pie chart of properties available in Ajman, grouped by the number of rooms'
+query_id = 'line_5'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+            result = main_agent(query)
+            assert result is not None
+        except Exception as e:
+&gt;           pytest.fail(f"Failed: {query}")
+E           Failed: Failed: create pie chart of properties available in Ajman, grouped by the number of rooms
+
+tests/test_agent.py:19: Failed</failure></testcase><testcase classname="tests.test_agent" name="test_main_agent[line_6]" time="7.523" /><testcase classname="tests.test_agent" name="test_main_agent[line_7]" time="23.310" /><testcase classname="tests.test_agent" name="test_main_agent[line_8]" time="16.176" /><testcase classname="tests.test_agent" name="test_main_agent[line_9]" time="23.847" /><testcase classname="tests.test_agent" name="test_main_agent[line_10]" time="66.079" /><testcase classname="tests.test_agent" name="test_main_agent[line_11]" time="30.018" /><testcase classname="tests.test_agent" name="test_main_agent[line_12]" time="12.765" /><testcase classname="tests.test_agent" name="test_main_agent[line_13]" time="10.563"><failure message="Failed: Failed: where is a 1 bedroom flat cheaper on average: Umm Al Quwain or Sharjah?">self = Index(['City', 'Average Price'], dtype='object'), key = 'latitude'
+
+    def get_loc(self, key):
+        """
+        Get integer location, slice or boolean mask for requested label.
+    
+        Parameters
+        ----------
+        key : label
+    
+        Returns
+        -------
+        int if unique index, slice if monotonic index, else mask
+    
+        Examples
+        --------
+        &gt;&gt;&gt; unique_index = pd.Index(list('abc'))
+        &gt;&gt;&gt; unique_index.get_loc('b')
+        1
+    
+        &gt;&gt;&gt; monotonic_index = pd.Index(list('abbc'))
+        &gt;&gt;&gt; monotonic_index.get_loc('b')
+        slice(1, 3, None)
+    
+        &gt;&gt;&gt; non_monotonic_index = pd.Index(list('abcb'))
+        &gt;&gt;&gt; non_monotonic_index.get_loc('b')
+        array([False,  True, False,  True])
+        """
+        casted_key = self._maybe_cast_indexer(key)
+        try:
+&gt;           return self._engine.get_loc(casted_key)
+
+.chatbot_env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3805: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+index.pyx:167: in pandas._libs.index.IndexEngine.get_loc
+    ???
+index.pyx:196: in pandas._libs.index.IndexEngine.get_loc
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7081: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+&gt;   ???
+E   KeyError: 'latitude'
+
+pandas/_libs/hashtable_class_helper.pxi:7089: KeyError
+
+The above exception was the direct cause of the following exception:
+
+query = 'where is a 1 bedroom flat cheaper on average: Umm Al Quwain or Sharjah?'
+query_id = 'line_13'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+&gt;           result = main_agent(query)
+
+tests/test_agent.py:16: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/agent.py:25: in main_agent
+    result = generate_google_maps_html(data)
+src/geo_tools.py:57: in generate_google_maps_html
+    position: {{ lat: {row['latitude']}, lng: {row['longitude']} }},
+.chatbot_env/lib/python3.12/site-packages/pandas/core/series.py:1121: in __getitem__
+    return self._get_value(key)
+.chatbot_env/lib/python3.12/site-packages/pandas/core/series.py:1237: in _get_value
+    loc = self.index.get_loc(label)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Index(['City', 'Average Price'], dtype='object'), key = 'latitude'
+
+    def get_loc(self, key):
+        """
+        Get integer location, slice or boolean mask for requested label.
+    
+        Parameters
+        ----------
+        key : label
+    
+        Returns
+        -------
+        int if unique index, slice if monotonic index, else mask
+    
+        Examples
+        --------
+        &gt;&gt;&gt; unique_index = pd.Index(list('abc'))
+        &gt;&gt;&gt; unique_index.get_loc('b')
+        1
+    
+        &gt;&gt;&gt; monotonic_index = pd.Index(list('abbc'))
+        &gt;&gt;&gt; monotonic_index.get_loc('b')
+        slice(1, 3, None)
+    
+        &gt;&gt;&gt; non_monotonic_index = pd.Index(list('abcb'))
+        &gt;&gt;&gt; non_monotonic_index.get_loc('b')
+        array([False,  True, False,  True])
+        """
+        casted_key = self._maybe_cast_indexer(key)
+        try:
+            return self._engine.get_loc(casted_key)
+        except KeyError as err:
+            if isinstance(casted_key, slice) or (
+                isinstance(casted_key, abc.Iterable)
+                and any(isinstance(x, slice) for x in casted_key)
+            ):
+                raise InvalidIndexError(key)
+&gt;           raise KeyError(key) from err
+E           KeyError: 'latitude'
+
+.chatbot_env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3812: KeyError
+
+During handling of the above exception, another exception occurred:
+
+query = 'where is a 1 bedroom flat cheaper on average: Umm Al Quwain or Sharjah?'
+query_id = 'line_13'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+            result = main_agent(query)
+            assert result is not None
+        except Exception as e:
+&gt;           pytest.fail(f"Failed: {query}")
+E           Failed: Failed: where is a 1 bedroom flat cheaper on average: Umm Al Quwain or Sharjah?
+
+tests/test_agent.py:19: Failed</failure></testcase><testcase classname="tests.test_agent" name="test_main_agent[line_14]" time="44.447" /><testcase classname="tests.test_agent" name="test_main_agent[line_15]" time="21.108" /><testcase classname="tests.test_agent" name="test_main_agent[line_16]" time="0.624" /><testcase classname="tests.test_agent" name="test_main_agent[line_17]" time="10.486" /><testcase classname="tests.test_agent" name="test_main_agent[line_18]" time="18.388" /><testcase classname="tests.test_agent" name="test_main_agent[line_19]" time="8.516" /><testcase classname="tests.test_agent" name="test_main_agent[line_20]" time="12.090"><failure message="Failed: Failed: create pie chart of properties available in Dubai Marina, grouped by the number of rooms">self = Index(['bedrooms', 'count'], dtype='object'), key = 'latitude'
+
+    def get_loc(self, key):
+        """
+        Get integer location, slice or boolean mask for requested label.
+    
+        Parameters
+        ----------
+        key : label
+    
+        Returns
+        -------
+        int if unique index, slice if monotonic index, else mask
+    
+        Examples
+        --------
+        &gt;&gt;&gt; unique_index = pd.Index(list('abc'))
+        &gt;&gt;&gt; unique_index.get_loc('b')
+        1
+    
+        &gt;&gt;&gt; monotonic_index = pd.Index(list('abbc'))
+        &gt;&gt;&gt; monotonic_index.get_loc('b')
+        slice(1, 3, None)
+    
+        &gt;&gt;&gt; non_monotonic_index = pd.Index(list('abcb'))
+        &gt;&gt;&gt; non_monotonic_index.get_loc('b')
+        array([False,  True, False,  True])
+        """
+        casted_key = self._maybe_cast_indexer(key)
+        try:
+&gt;           return self._engine.get_loc(casted_key)
+
+.chatbot_env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3805: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+index.pyx:167: in pandas._libs.index.IndexEngine.get_loc
+    ???
+index.pyx:196: in pandas._libs.index.IndexEngine.get_loc
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7081: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+&gt;   ???
+E   KeyError: 'latitude'
+
+pandas/_libs/hashtable_class_helper.pxi:7089: KeyError
+
+The above exception was the direct cause of the following exception:
+
+query = 'create pie chart of properties available in Dubai Marina, grouped by the number of rooms'
+query_id = 'line_20'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+&gt;           result = main_agent(query)
+
+tests/test_agent.py:16: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/agent.py:25: in main_agent
+    result = generate_google_maps_html(data)
+src/geo_tools.py:57: in generate_google_maps_html
+    position: {{ lat: {row['latitude']}, lng: {row['longitude']} }},
+.chatbot_env/lib/python3.12/site-packages/pandas/core/series.py:1121: in __getitem__
+    return self._get_value(key)
+.chatbot_env/lib/python3.12/site-packages/pandas/core/series.py:1237: in _get_value
+    loc = self.index.get_loc(label)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Index(['bedrooms', 'count'], dtype='object'), key = 'latitude'
+
+    def get_loc(self, key):
+        """
+        Get integer location, slice or boolean mask for requested label.
+    
+        Parameters
+        ----------
+        key : label
+    
+        Returns
+        -------
+        int if unique index, slice if monotonic index, else mask
+    
+        Examples
+        --------
+        &gt;&gt;&gt; unique_index = pd.Index(list('abc'))
+        &gt;&gt;&gt; unique_index.get_loc('b')
+        1
+    
+        &gt;&gt;&gt; monotonic_index = pd.Index(list('abbc'))
+        &gt;&gt;&gt; monotonic_index.get_loc('b')
+        slice(1, 3, None)
+    
+        &gt;&gt;&gt; non_monotonic_index = pd.Index(list('abcb'))
+        &gt;&gt;&gt; non_monotonic_index.get_loc('b')
+        array([False,  True, False,  True])
+        """
+        casted_key = self._maybe_cast_indexer(key)
+        try:
+            return self._engine.get_loc(casted_key)
+        except KeyError as err:
+            if isinstance(casted_key, slice) or (
+                isinstance(casted_key, abc.Iterable)
+                and any(isinstance(x, slice) for x in casted_key)
+            ):
+                raise InvalidIndexError(key)
+&gt;           raise KeyError(key) from err
+E           KeyError: 'latitude'
+
+.chatbot_env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3812: KeyError
+
+During handling of the above exception, another exception occurred:
+
+query = 'create pie chart of properties available in Dubai Marina, grouped by the number of rooms'
+query_id = 'line_20'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+            result = main_agent(query)
+            assert result is not None
+        except Exception as e:
+&gt;           pytest.fail(f"Failed: {query}")
+E           Failed: Failed: create pie chart of properties available in Dubai Marina, grouped by the number of rooms
+
+tests/test_agent.py:19: Failed</failure></testcase><testcase classname="tests.test_agent" name="test_main_agent[line_21]" time="22.342" /><testcase classname="tests.test_agent" name="test_main_agent[line_22]" time="13.804" /><testcase classname="tests.test_agent" name="test_main_agent[line_23]" time="0.427" /><testcase classname="tests.test_agent" name="test_main_agent[line_24]" time="28.169" /><testcase classname="tests.test_agent" name="test_main_agent[line_25]" time="25.332" /><testcase classname="tests.test_agent" name="test_main_agent[line_26]" time="28.356" /><testcase classname="tests.test_agent" name="test_main_agent[line_27]" time="24.912"><failure message="Failed: Failed: create time series plot of the number of properties added in Dubai per month">query = 'create time series plot of the number of properties added in Dubai per month'
+query_id = 'line_27'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+&gt;           result = main_agent(query)
+
+tests/test_agent.py:16: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/agent.py:21: in main_agent
+    result = visualize_tool.invoke({"data": data, "query": query})
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:513: in invoke
+    return self.run(tool_input, **kwargs)
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:774: in run
+    raise error_to_raise
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:736: in run
+    tool_args, tool_kwargs = self._to_args_and_kwargs(
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:651: in _to_args_and_kwargs
+    tool_input = self._parse_input(tool_input, tool_call_id)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = StructuredTool(name='visualize_tool', description='Generate visualizations for the Dubai property dataset using Plotly..., args_schema=&lt;class 'langchain_core.utils.pydantic.visualize_tool'&gt;, func=&lt;function visualize_tool at 0x748bba723880&gt;)
+tool_input = {'data': None, 'query': 'create time series plot of the number of properties added in Dubai per month'}
+tool_call_id = None
+
+    def _parse_input(
+        self, tool_input: Union[str, dict], tool_call_id: Optional[str]
+    ) -&gt; Union[str, dict[str, Any]]:
+        """Convert tool input to a pydantic model.
+    
+        Args:
+            tool_input: The input to the tool.
+            tool_call_id: The id of the tool call.
+        """
+        input_args = self.args_schema
+        if isinstance(tool_input, str):
+            if input_args is not None:
+                if isinstance(input_args, dict):
+                    msg = (
+                        "String tool inputs are not allowed when "
+                        "using tools with JSON schema args_schema."
+                    )
+                    raise ValueError(msg)
+                key_ = next(iter(get_fields(input_args).keys()))
+                if hasattr(input_args, "model_validate"):
+                    input_args.model_validate({key_: tool_input})
+                else:
+                    input_args.parse_obj({key_: tool_input})
+            return tool_input
+        if input_args is not None:
+            if isinstance(input_args, dict):
+                return tool_input
+            if issubclass(input_args, BaseModel):
+                for k, v in get_all_basemodel_annotations(input_args).items():
+                    if (
+                        _is_injected_arg_type(v, injected_type=InjectedToolCallId)
+                        and k not in tool_input
+                    ):
+                        if tool_call_id is None:
+                            msg = (
+                                "When tool includes an InjectedToolCallId "
+                                "argument, tool must always be invoked with a full "
+                                "model ToolCall of the form: {'args': {...}, "
+                                "'name': '...', 'type': 'tool_call', "
+                                "'tool_call_id': '...'}"
+                            )
+                            raise ValueError(msg)
+                        tool_input[k] = tool_call_id
+&gt;               result = input_args.model_validate(tool_input)
+E               pydantic_core._pydantic_core.ValidationError: 1 validation error for visualize_tool
+E               data
+E                 Input should be a valid list [type=list_type, input_value=None, input_type=NoneType]
+E                   For further information visit https://errors.pydantic.dev/2.11/v/list_type
+
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:570: ValidationError
+
+During handling of the above exception, another exception occurred:
+
+query = 'create time series plot of the number of properties added in Dubai per month'
+query_id = 'line_27'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+            result = main_agent(query)
+            assert result is not None
+        except Exception as e:
+&gt;           pytest.fail(f"Failed: {query}")
+E           Failed: Failed: create time series plot of the number of properties added in Dubai per month
+
+tests/test_agent.py:19: Failed</failure></testcase><testcase classname="tests.test_agent" name="test_main_agent[line_28]" time="10.289" /><testcase classname="tests.test_agent" name="test_main_agent[line_29]" time="61.668" /><testcase classname="tests.test_agent" name="test_main_agent[line_30]" time="18.631" /><testcase classname="tests.test_agent" name="test_main_agent[line_31]" time="18.300" /><testcase classname="tests.test_agent" name="test_main_agent[line_32]" time="10.821" /><testcase classname="tests.test_agent" name="test_main_agent[line_33]" time="16.146" /><testcase classname="tests.test_agent" name="test_main_agent[line_34]" time="10.379" /><testcase classname="tests.test_agent" name="test_main_agent[line_35]" time="9.471" /><testcase classname="tests.test_agent" name="test_main_agent[line_36]" time="12.529" /><testcase classname="tests.test_agent" name="test_main_agent[line_37]" time="54.939" /><testcase classname="tests.test_agent" name="test_main_agent[line_38]" time="6.132" /><testcase classname="tests.test_agent" name="test_main_agent[line_39]" time="11.245" /><testcase classname="tests.test_agent" name="test_main_agent[line_40]" time="9.222" /><testcase classname="tests.test_agent" name="test_main_agent[line_41]" time="0.597" /><testcase classname="tests.test_agent" name="test_main_agent[line_42]" time="1.516" /><testcase classname="tests.test_agent" name="test_main_agent[line_43]" time="12.634" /><testcase classname="tests.test_agent" name="test_main_agent[line_44]" time="4.361" /><testcase classname="tests.test_agent" name="test_main_agent[line_45]" time="19.795"><failure message="Failed: Failed: create time series plot of the number of properties added in Fujairah per month">query = 'create time series plot of the number of properties added in Fujairah per month'
+query_id = 'line_45'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+&gt;           result = main_agent(query)
+
+tests/test_agent.py:16: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/agent.py:21: in main_agent
+    result = visualize_tool.invoke({"data": data, "query": query})
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:513: in invoke
+    return self.run(tool_input, **kwargs)
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:774: in run
+    raise error_to_raise
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:736: in run
+    tool_args, tool_kwargs = self._to_args_and_kwargs(
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:651: in _to_args_and_kwargs
+    tool_input = self._parse_input(tool_input, tool_call_id)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = StructuredTool(name='visualize_tool', description='Generate visualizations for the Dubai property dataset using Plotly..., args_schema=&lt;class 'langchain_core.utils.pydantic.visualize_tool'&gt;, func=&lt;function visualize_tool at 0x748bba723880&gt;)
+tool_input = {'data': None, 'query': 'create time series plot of the number of properties added in Fujairah per month'}
+tool_call_id = None
+
+    def _parse_input(
+        self, tool_input: Union[str, dict], tool_call_id: Optional[str]
+    ) -&gt; Union[str, dict[str, Any]]:
+        """Convert tool input to a pydantic model.
+    
+        Args:
+            tool_input: The input to the tool.
+            tool_call_id: The id of the tool call.
+        """
+        input_args = self.args_schema
+        if isinstance(tool_input, str):
+            if input_args is not None:
+                if isinstance(input_args, dict):
+                    msg = (
+                        "String tool inputs are not allowed when "
+                        "using tools with JSON schema args_schema."
+                    )
+                    raise ValueError(msg)
+                key_ = next(iter(get_fields(input_args).keys()))
+                if hasattr(input_args, "model_validate"):
+                    input_args.model_validate({key_: tool_input})
+                else:
+                    input_args.parse_obj({key_: tool_input})
+            return tool_input
+        if input_args is not None:
+            if isinstance(input_args, dict):
+                return tool_input
+            if issubclass(input_args, BaseModel):
+                for k, v in get_all_basemodel_annotations(input_args).items():
+                    if (
+                        _is_injected_arg_type(v, injected_type=InjectedToolCallId)
+                        and k not in tool_input
+                    ):
+                        if tool_call_id is None:
+                            msg = (
+                                "When tool includes an InjectedToolCallId "
+                                "argument, tool must always be invoked with a full "
+                                "model ToolCall of the form: {'args': {...}, "
+                                "'name': '...', 'type': 'tool_call', "
+                                "'tool_call_id': '...'}"
+                            )
+                            raise ValueError(msg)
+                        tool_input[k] = tool_call_id
+&gt;               result = input_args.model_validate(tool_input)
+E               pydantic_core._pydantic_core.ValidationError: 1 validation error for visualize_tool
+E               data
+E                 Input should be a valid list [type=list_type, input_value=None, input_type=NoneType]
+E                   For further information visit https://errors.pydantic.dev/2.11/v/list_type
+
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:570: ValidationError
+
+During handling of the above exception, another exception occurred:
+
+query = 'create time series plot of the number of properties added in Fujairah per month'
+query_id = 'line_45'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+            result = main_agent(query)
+            assert result is not None
+        except Exception as e:
+&gt;           pytest.fail(f"Failed: {query}")
+E           Failed: Failed: create time series plot of the number of properties added in Fujairah per month
+
+tests/test_agent.py:19: Failed</failure></testcase><testcase classname="tests.test_agent" name="test_main_agent[line_46]" time="14.032" /><testcase classname="tests.test_agent" name="test_main_agent[line_47]" time="5.297" /><testcase classname="tests.test_agent" name="test_main_agent[line_48]" time="16.175" /><testcase classname="tests.test_agent" name="test_main_agent[line_49]" time="40.753"><failure message="Failed: Failed: create time series plot of the number of properties added in Emirates Hills per month">query = 'create time series plot of the number of properties added in Emirates Hills per month'
+query_id = 'line_49'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+&gt;           result = main_agent(query)
+
+tests/test_agent.py:16: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/agent.py:21: in main_agent
+    result = visualize_tool.invoke({"data": data, "query": query})
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:513: in invoke
+    return self.run(tool_input, **kwargs)
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:774: in run
+    raise error_to_raise
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:736: in run
+    tool_args, tool_kwargs = self._to_args_and_kwargs(
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:651: in _to_args_and_kwargs
+    tool_input = self._parse_input(tool_input, tool_call_id)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = StructuredTool(name='visualize_tool', description='Generate visualizations for the Dubai property dataset using Plotly..., args_schema=&lt;class 'langchain_core.utils.pydantic.visualize_tool'&gt;, func=&lt;function visualize_tool at 0x748bba723880&gt;)
+tool_input = {'data': None, 'query': 'create time series plot of the number of properties added in Emirates Hills per month'}
+tool_call_id = None
+
+    def _parse_input(
+        self, tool_input: Union[str, dict], tool_call_id: Optional[str]
+    ) -&gt; Union[str, dict[str, Any]]:
+        """Convert tool input to a pydantic model.
+    
+        Args:
+            tool_input: The input to the tool.
+            tool_call_id: The id of the tool call.
+        """
+        input_args = self.args_schema
+        if isinstance(tool_input, str):
+            if input_args is not None:
+                if isinstance(input_args, dict):
+                    msg = (
+                        "String tool inputs are not allowed when "
+                        "using tools with JSON schema args_schema."
+                    )
+                    raise ValueError(msg)
+                key_ = next(iter(get_fields(input_args).keys()))
+                if hasattr(input_args, "model_validate"):
+                    input_args.model_validate({key_: tool_input})
+                else:
+                    input_args.parse_obj({key_: tool_input})
+            return tool_input
+        if input_args is not None:
+            if isinstance(input_args, dict):
+                return tool_input
+            if issubclass(input_args, BaseModel):
+                for k, v in get_all_basemodel_annotations(input_args).items():
+                    if (
+                        _is_injected_arg_type(v, injected_type=InjectedToolCallId)
+                        and k not in tool_input
+                    ):
+                        if tool_call_id is None:
+                            msg = (
+                                "When tool includes an InjectedToolCallId "
+                                "argument, tool must always be invoked with a full "
+                                "model ToolCall of the form: {'args': {...}, "
+                                "'name': '...', 'type': 'tool_call', "
+                                "'tool_call_id': '...'}"
+                            )
+                            raise ValueError(msg)
+                        tool_input[k] = tool_call_id
+&gt;               result = input_args.model_validate(tool_input)
+E               pydantic_core._pydantic_core.ValidationError: 1 validation error for visualize_tool
+E               data
+E                 Input should be a valid list [type=list_type, input_value=None, input_type=NoneType]
+E                   For further information visit https://errors.pydantic.dev/2.11/v/list_type
+
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:570: ValidationError
+
+During handling of the above exception, another exception occurred:
+
+query = 'create time series plot of the number of properties added in Emirates Hills per month'
+query_id = 'line_49'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+            result = main_agent(query)
+            assert result is not None
+        except Exception as e:
+&gt;           pytest.fail(f"Failed: {query}")
+E           Failed: Failed: create time series plot of the number of properties added in Emirates Hills per month
+
+tests/test_agent.py:19: Failed</failure></testcase><testcase classname="tests.test_agent" name="test_main_agent[line_50]" time="15.778" /><testcase classname="tests.test_agent" name="test_main_agent[line_51]" time="37.353"><failure message="Failed: Failed: make bar plot of the average property prices in Palm Jumeirah by the number of rooms">query = 'make bar plot of the average property prices in Palm Jumeirah by the number of rooms'
+query_id = 'line_51'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+&gt;           result = main_agent(query)
+
+tests/test_agent.py:16: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/agent.py:21: in main_agent
+    result = visualize_tool.invoke({"data": data, "query": query})
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:513: in invoke
+    return self.run(tool_input, **kwargs)
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:774: in run
+    raise error_to_raise
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:736: in run
+    tool_args, tool_kwargs = self._to_args_and_kwargs(
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:651: in _to_args_and_kwargs
+    tool_input = self._parse_input(tool_input, tool_call_id)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = StructuredTool(name='visualize_tool', description='Generate visualizations for the Dubai property dataset using Plotly..., args_schema=&lt;class 'langchain_core.utils.pydantic.visualize_tool'&gt;, func=&lt;function visualize_tool at 0x748bba723880&gt;)
+tool_input = {'data': None, 'query': 'make bar plot of the average property prices in Palm Jumeirah by the number of rooms'}
+tool_call_id = None
+
+    def _parse_input(
+        self, tool_input: Union[str, dict], tool_call_id: Optional[str]
+    ) -&gt; Union[str, dict[str, Any]]:
+        """Convert tool input to a pydantic model.
+    
+        Args:
+            tool_input: The input to the tool.
+            tool_call_id: The id of the tool call.
+        """
+        input_args = self.args_schema
+        if isinstance(tool_input, str):
+            if input_args is not None:
+                if isinstance(input_args, dict):
+                    msg = (
+                        "String tool inputs are not allowed when "
+                        "using tools with JSON schema args_schema."
+                    )
+                    raise ValueError(msg)
+                key_ = next(iter(get_fields(input_args).keys()))
+                if hasattr(input_args, "model_validate"):
+                    input_args.model_validate({key_: tool_input})
+                else:
+                    input_args.parse_obj({key_: tool_input})
+            return tool_input
+        if input_args is not None:
+            if isinstance(input_args, dict):
+                return tool_input
+            if issubclass(input_args, BaseModel):
+                for k, v in get_all_basemodel_annotations(input_args).items():
+                    if (
+                        _is_injected_arg_type(v, injected_type=InjectedToolCallId)
+                        and k not in tool_input
+                    ):
+                        if tool_call_id is None:
+                            msg = (
+                                "When tool includes an InjectedToolCallId "
+                                "argument, tool must always be invoked with a full "
+                                "model ToolCall of the form: {'args': {...}, "
+                                "'name': '...', 'type': 'tool_call', "
+                                "'tool_call_id': '...'}"
+                            )
+                            raise ValueError(msg)
+                        tool_input[k] = tool_call_id
+&gt;               result = input_args.model_validate(tool_input)
+E               pydantic_core._pydantic_core.ValidationError: 1 validation error for visualize_tool
+E               data
+E                 Input should be a valid list [type=list_type, input_value=None, input_type=NoneType]
+E                   For further information visit https://errors.pydantic.dev/2.11/v/list_type
+
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:570: ValidationError
+
+During handling of the above exception, another exception occurred:
+
+query = 'make bar plot of the average property prices in Palm Jumeirah by the number of rooms'
+query_id = 'line_51'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+            result = main_agent(query)
+            assert result is not None
+        except Exception as e:
+&gt;           pytest.fail(f"Failed: {query}")
+E           Failed: Failed: make bar plot of the average property prices in Palm Jumeirah by the number of rooms
+
+tests/test_agent.py:19: Failed</failure></testcase><testcase classname="tests.test_agent" name="test_main_agent[line_52]" time="22.916" /><testcase classname="tests.test_agent" name="test_main_agent[line_53]" time="19.128" /><testcase classname="tests.test_agent" name="test_main_agent[line_54]" time="20.547" /><testcase classname="tests.test_agent" name="test_main_agent[line_55]" time="11.171" /><testcase classname="tests.test_agent" name="test_main_agent[line_56]" time="24.514" /><testcase classname="tests.test_agent" name="test_main_agent[line_57]" time="19.031" /><testcase classname="tests.test_agent" name="test_main_agent[line_58]" time="35.443" /><testcase classname="tests.test_agent" name="test_main_agent[line_59]" time="1.814" /><testcase classname="tests.test_agent" name="test_main_agent[line_60]" time="1.661" /><testcase classname="tests.test_agent" name="test_main_agent[line_61]" time="5.044" /><testcase classname="tests.test_agent" name="test_main_agent[line_62]" time="20.198" /><testcase classname="tests.test_agent" name="test_main_agent[line_63]" time="11.577" /><testcase classname="tests.test_agent" name="test_main_agent[line_64]" time="6.523" /><testcase classname="tests.test_agent" name="test_main_agent[line_65]" time="26.993" /><testcase classname="tests.test_agent" name="test_main_agent[line_66]" time="10.326" /><testcase classname="tests.test_agent" name="test_main_agent[line_67]" time="14.672" /><testcase classname="tests.test_agent" name="test_main_agent[line_68]" time="45.335" /><testcase classname="tests.test_agent" name="test_main_agent[line_69]" time="1.575" /><testcase classname="tests.test_agent" name="test_main_agent[line_70]" time="11.055"><failure message="Failed: Failed: create time series plot of the number of properties added in Dubai per month">query = 'create time series plot of the number of properties added in Dubai per month'
+query_id = 'line_70'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+&gt;           result = main_agent(query)
+
+tests/test_agent.py:16: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/agent.py:21: in main_agent
+    result = visualize_tool.invoke({"data": data, "query": query})
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:513: in invoke
+    return self.run(tool_input, **kwargs)
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:774: in run
+    raise error_to_raise
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:736: in run
+    tool_args, tool_kwargs = self._to_args_and_kwargs(
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:651: in _to_args_and_kwargs
+    tool_input = self._parse_input(tool_input, tool_call_id)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = StructuredTool(name='visualize_tool', description='Generate visualizations for the Dubai property dataset using Plotly..., args_schema=&lt;class 'langchain_core.utils.pydantic.visualize_tool'&gt;, func=&lt;function visualize_tool at 0x748bba723880&gt;)
+tool_input = {'data': None, 'query': 'create time series plot of the number of properties added in Dubai per month'}
+tool_call_id = None
+
+    def _parse_input(
+        self, tool_input: Union[str, dict], tool_call_id: Optional[str]
+    ) -&gt; Union[str, dict[str, Any]]:
+        """Convert tool input to a pydantic model.
+    
+        Args:
+            tool_input: The input to the tool.
+            tool_call_id: The id of the tool call.
+        """
+        input_args = self.args_schema
+        if isinstance(tool_input, str):
+            if input_args is not None:
+                if isinstance(input_args, dict):
+                    msg = (
+                        "String tool inputs are not allowed when "
+                        "using tools with JSON schema args_schema."
+                    )
+                    raise ValueError(msg)
+                key_ = next(iter(get_fields(input_args).keys()))
+                if hasattr(input_args, "model_validate"):
+                    input_args.model_validate({key_: tool_input})
+                else:
+                    input_args.parse_obj({key_: tool_input})
+            return tool_input
+        if input_args is not None:
+            if isinstance(input_args, dict):
+                return tool_input
+            if issubclass(input_args, BaseModel):
+                for k, v in get_all_basemodel_annotations(input_args).items():
+                    if (
+                        _is_injected_arg_type(v, injected_type=InjectedToolCallId)
+                        and k not in tool_input
+                    ):
+                        if tool_call_id is None:
+                            msg = (
+                                "When tool includes an InjectedToolCallId "
+                                "argument, tool must always be invoked with a full "
+                                "model ToolCall of the form: {'args': {...}, "
+                                "'name': '...', 'type': 'tool_call', "
+                                "'tool_call_id': '...'}"
+                            )
+                            raise ValueError(msg)
+                        tool_input[k] = tool_call_id
+&gt;               result = input_args.model_validate(tool_input)
+E               pydantic_core._pydantic_core.ValidationError: 1 validation error for visualize_tool
+E               data
+E                 Input should be a valid list [type=list_type, input_value=None, input_type=NoneType]
+E                   For further information visit https://errors.pydantic.dev/2.11/v/list_type
+
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:570: ValidationError
+
+During handling of the above exception, another exception occurred:
+
+query = 'create time series plot of the number of properties added in Dubai per month'
+query_id = 'line_70'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+            result = main_agent(query)
+            assert result is not None
+        except Exception as e:
+&gt;           pytest.fail(f"Failed: {query}")
+E           Failed: Failed: create time series plot of the number of properties added in Dubai per month
+
+tests/test_agent.py:19: Failed</failure></testcase><testcase classname="tests.test_agent" name="test_main_agent[line_71]" time="3.849" /><testcase classname="tests.test_agent" name="test_main_agent[line_72]" time="1.828" /><testcase classname="tests.test_agent" name="test_main_agent[line_73]" time="9.817" /><testcase classname="tests.test_agent" name="test_main_agent[line_74]" time="11.434" /><testcase classname="tests.test_agent" name="test_main_agent[line_75]" time="1.673" /><testcase classname="tests.test_agent" name="test_main_agent[line_76]" time="26.965"><failure message="Failed: Failed: where is a 4 bedroom flat cheaper on average: Ras Al Khaimah or Umm Al Quwain?">self = Index(['City', 'Average Price'], dtype='object'), key = 'latitude'
+
+    def get_loc(self, key):
+        """
+        Get integer location, slice or boolean mask for requested label.
+    
+        Parameters
+        ----------
+        key : label
+    
+        Returns
+        -------
+        int if unique index, slice if monotonic index, else mask
+    
+        Examples
+        --------
+        &gt;&gt;&gt; unique_index = pd.Index(list('abc'))
+        &gt;&gt;&gt; unique_index.get_loc('b')
+        1
+    
+        &gt;&gt;&gt; monotonic_index = pd.Index(list('abbc'))
+        &gt;&gt;&gt; monotonic_index.get_loc('b')
+        slice(1, 3, None)
+    
+        &gt;&gt;&gt; non_monotonic_index = pd.Index(list('abcb'))
+        &gt;&gt;&gt; non_monotonic_index.get_loc('b')
+        array([False,  True, False,  True])
+        """
+        casted_key = self._maybe_cast_indexer(key)
+        try:
+&gt;           return self._engine.get_loc(casted_key)
+
+.chatbot_env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3805: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+index.pyx:167: in pandas._libs.index.IndexEngine.get_loc
+    ???
+index.pyx:196: in pandas._libs.index.IndexEngine.get_loc
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7081: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+&gt;   ???
+E   KeyError: 'latitude'
+
+pandas/_libs/hashtable_class_helper.pxi:7089: KeyError
+
+The above exception was the direct cause of the following exception:
+
+query = 'where is a 4 bedroom flat cheaper on average: Ras Al Khaimah or Umm Al Quwain?'
+query_id = 'line_76'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+&gt;           result = main_agent(query)
+
+tests/test_agent.py:16: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/agent.py:25: in main_agent
+    result = generate_google_maps_html(data)
+src/geo_tools.py:57: in generate_google_maps_html
+    position: {{ lat: {row['latitude']}, lng: {row['longitude']} }},
+.chatbot_env/lib/python3.12/site-packages/pandas/core/series.py:1121: in __getitem__
+    return self._get_value(key)
+.chatbot_env/lib/python3.12/site-packages/pandas/core/series.py:1237: in _get_value
+    loc = self.index.get_loc(label)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Index(['City', 'Average Price'], dtype='object'), key = 'latitude'
+
+    def get_loc(self, key):
+        """
+        Get integer location, slice or boolean mask for requested label.
+    
+        Parameters
+        ----------
+        key : label
+    
+        Returns
+        -------
+        int if unique index, slice if monotonic index, else mask
+    
+        Examples
+        --------
+        &gt;&gt;&gt; unique_index = pd.Index(list('abc'))
+        &gt;&gt;&gt; unique_index.get_loc('b')
+        1
+    
+        &gt;&gt;&gt; monotonic_index = pd.Index(list('abbc'))
+        &gt;&gt;&gt; monotonic_index.get_loc('b')
+        slice(1, 3, None)
+    
+        &gt;&gt;&gt; non_monotonic_index = pd.Index(list('abcb'))
+        &gt;&gt;&gt; non_monotonic_index.get_loc('b')
+        array([False,  True, False,  True])
+        """
+        casted_key = self._maybe_cast_indexer(key)
+        try:
+            return self._engine.get_loc(casted_key)
+        except KeyError as err:
+            if isinstance(casted_key, slice) or (
+                isinstance(casted_key, abc.Iterable)
+                and any(isinstance(x, slice) for x in casted_key)
+            ):
+                raise InvalidIndexError(key)
+&gt;           raise KeyError(key) from err
+E           KeyError: 'latitude'
+
+.chatbot_env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3812: KeyError
+
+During handling of the above exception, another exception occurred:
+
+query = 'where is a 4 bedroom flat cheaper on average: Ras Al Khaimah or Umm Al Quwain?'
+query_id = 'line_76'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+            result = main_agent(query)
+            assert result is not None
+        except Exception as e:
+&gt;           pytest.fail(f"Failed: {query}")
+E           Failed: Failed: where is a 4 bedroom flat cheaper on average: Ras Al Khaimah or Umm Al Quwain?
+
+tests/test_agent.py:19: Failed</failure></testcase><testcase classname="tests.test_agent" name="test_main_agent[line_77]" time="7.479" /><testcase classname="tests.test_agent" name="test_main_agent[line_78]" time="10.704" /><testcase classname="tests.test_agent" name="test_main_agent[line_79]" time="25.982" /><testcase classname="tests.test_agent" name="test_main_agent[line_80]" time="1.639" /><testcase classname="tests.test_agent" name="test_main_agent[line_81]" time="9.734" /><testcase classname="tests.test_agent" name="test_main_agent[line_82]" time="1.760" /><testcase classname="tests.test_agent" name="test_main_agent[line_83]" time="11.136"><failure message="Failed: Failed: create pie chart of properties available in Fujairah, grouped by the number of rooms">self = Index(['count'], dtype='object'), key = 'latitude'
+
+    def get_loc(self, key):
+        """
+        Get integer location, slice or boolean mask for requested label.
+    
+        Parameters
+        ----------
+        key : label
+    
+        Returns
+        -------
+        int if unique index, slice if monotonic index, else mask
+    
+        Examples
+        --------
+        &gt;&gt;&gt; unique_index = pd.Index(list('abc'))
+        &gt;&gt;&gt; unique_index.get_loc('b')
+        1
+    
+        &gt;&gt;&gt; monotonic_index = pd.Index(list('abbc'))
+        &gt;&gt;&gt; monotonic_index.get_loc('b')
+        slice(1, 3, None)
+    
+        &gt;&gt;&gt; non_monotonic_index = pd.Index(list('abcb'))
+        &gt;&gt;&gt; non_monotonic_index.get_loc('b')
+        array([False,  True, False,  True])
+        """
+        casted_key = self._maybe_cast_indexer(key)
+        try:
+&gt;           return self._engine.get_loc(casted_key)
+
+.chatbot_env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3805: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+index.pyx:167: in pandas._libs.index.IndexEngine.get_loc
+    ???
+index.pyx:196: in pandas._libs.index.IndexEngine.get_loc
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7081: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+&gt;   ???
+E   KeyError: 'latitude'
+
+pandas/_libs/hashtable_class_helper.pxi:7089: KeyError
+
+The above exception was the direct cause of the following exception:
+
+query = 'create pie chart of properties available in Fujairah, grouped by the number of rooms'
+query_id = 'line_83'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+&gt;           result = main_agent(query)
+
+tests/test_agent.py:16: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/agent.py:25: in main_agent
+    result = generate_google_maps_html(data)
+src/geo_tools.py:57: in generate_google_maps_html
+    position: {{ lat: {row['latitude']}, lng: {row['longitude']} }},
+.chatbot_env/lib/python3.12/site-packages/pandas/core/series.py:1121: in __getitem__
+    return self._get_value(key)
+.chatbot_env/lib/python3.12/site-packages/pandas/core/series.py:1237: in _get_value
+    loc = self.index.get_loc(label)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Index(['count'], dtype='object'), key = 'latitude'
+
+    def get_loc(self, key):
+        """
+        Get integer location, slice or boolean mask for requested label.
+    
+        Parameters
+        ----------
+        key : label
+    
+        Returns
+        -------
+        int if unique index, slice if monotonic index, else mask
+    
+        Examples
+        --------
+        &gt;&gt;&gt; unique_index = pd.Index(list('abc'))
+        &gt;&gt;&gt; unique_index.get_loc('b')
+        1
+    
+        &gt;&gt;&gt; monotonic_index = pd.Index(list('abbc'))
+        &gt;&gt;&gt; monotonic_index.get_loc('b')
+        slice(1, 3, None)
+    
+        &gt;&gt;&gt; non_monotonic_index = pd.Index(list('abcb'))
+        &gt;&gt;&gt; non_monotonic_index.get_loc('b')
+        array([False,  True, False,  True])
+        """
+        casted_key = self._maybe_cast_indexer(key)
+        try:
+            return self._engine.get_loc(casted_key)
+        except KeyError as err:
+            if isinstance(casted_key, slice) or (
+                isinstance(casted_key, abc.Iterable)
+                and any(isinstance(x, slice) for x in casted_key)
+            ):
+                raise InvalidIndexError(key)
+&gt;           raise KeyError(key) from err
+E           KeyError: 'latitude'
+
+.chatbot_env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3812: KeyError
+
+During handling of the above exception, another exception occurred:
+
+query = 'create pie chart of properties available in Fujairah, grouped by the number of rooms'
+query_id = 'line_83'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+            result = main_agent(query)
+            assert result is not None
+        except Exception as e:
+&gt;           pytest.fail(f"Failed: {query}")
+E           Failed: Failed: create pie chart of properties available in Fujairah, grouped by the number of rooms
+
+tests/test_agent.py:19: Failed</failure></testcase><testcase classname="tests.test_agent" name="test_main_agent[line_84]" time="19.786" /><testcase classname="tests.test_agent" name="test_main_agent[line_85]" time="1.754" /><testcase classname="tests.test_agent" name="test_main_agent[line_86]" time="46.864" /><testcase classname="tests.test_agent" name="test_main_agent[line_87]" time="27.281" /><testcase classname="tests.test_agent" name="test_main_agent[line_88]" time="29.054"><failure message="Failed: Failed: create time series plot of the number of properties added in Emirates Hills per month">query = 'create time series plot of the number of properties added in Emirates Hills per month'
+query_id = 'line_88'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+&gt;           result = main_agent(query)
+
+tests/test_agent.py:16: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/agent.py:21: in main_agent
+    result = visualize_tool.invoke({"data": data, "query": query})
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:513: in invoke
+    return self.run(tool_input, **kwargs)
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:774: in run
+    raise error_to_raise
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:736: in run
+    tool_args, tool_kwargs = self._to_args_and_kwargs(
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:651: in _to_args_and_kwargs
+    tool_input = self._parse_input(tool_input, tool_call_id)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = StructuredTool(name='visualize_tool', description='Generate visualizations for the Dubai property dataset using Plotly..., args_schema=&lt;class 'langchain_core.utils.pydantic.visualize_tool'&gt;, func=&lt;function visualize_tool at 0x748bba723880&gt;)
+tool_input = {'data': None, 'query': 'create time series plot of the number of properties added in Emirates Hills per month'}
+tool_call_id = None
+
+    def _parse_input(
+        self, tool_input: Union[str, dict], tool_call_id: Optional[str]
+    ) -&gt; Union[str, dict[str, Any]]:
+        """Convert tool input to a pydantic model.
+    
+        Args:
+            tool_input: The input to the tool.
+            tool_call_id: The id of the tool call.
+        """
+        input_args = self.args_schema
+        if isinstance(tool_input, str):
+            if input_args is not None:
+                if isinstance(input_args, dict):
+                    msg = (
+                        "String tool inputs are not allowed when "
+                        "using tools with JSON schema args_schema."
+                    )
+                    raise ValueError(msg)
+                key_ = next(iter(get_fields(input_args).keys()))
+                if hasattr(input_args, "model_validate"):
+                    input_args.model_validate({key_: tool_input})
+                else:
+                    input_args.parse_obj({key_: tool_input})
+            return tool_input
+        if input_args is not None:
+            if isinstance(input_args, dict):
+                return tool_input
+            if issubclass(input_args, BaseModel):
+                for k, v in get_all_basemodel_annotations(input_args).items():
+                    if (
+                        _is_injected_arg_type(v, injected_type=InjectedToolCallId)
+                        and k not in tool_input
+                    ):
+                        if tool_call_id is None:
+                            msg = (
+                                "When tool includes an InjectedToolCallId "
+                                "argument, tool must always be invoked with a full "
+                                "model ToolCall of the form: {'args': {...}, "
+                                "'name': '...', 'type': 'tool_call', "
+                                "'tool_call_id': '...'}"
+                            )
+                            raise ValueError(msg)
+                        tool_input[k] = tool_call_id
+&gt;               result = input_args.model_validate(tool_input)
+E               pydantic_core._pydantic_core.ValidationError: 1 validation error for visualize_tool
+E               data
+E                 Input should be a valid list [type=list_type, input_value=None, input_type=NoneType]
+E                   For further information visit https://errors.pydantic.dev/2.11/v/list_type
+
+.chatbot_env/lib/python3.12/site-packages/langchain_core/tools/base.py:570: ValidationError
+
+During handling of the above exception, another exception occurred:
+
+query = 'create time series plot of the number of properties added in Emirates Hills per month'
+query_id = 'line_88'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+            result = main_agent(query)
+            assert result is not None
+        except Exception as e:
+&gt;           pytest.fail(f"Failed: {query}")
+E           Failed: Failed: create time series plot of the number of properties added in Emirates Hills per month
+
+tests/test_agent.py:19: Failed</failure></testcase><testcase classname="tests.test_agent" name="test_main_agent[line_89]" time="7.373" /><testcase classname="tests.test_agent" name="test_main_agent[line_90]" time="1.680" /><testcase classname="tests.test_agent" name="test_main_agent[line_91]" time="9.095" /><testcase classname="tests.test_agent" name="test_main_agent[line_92]" time="8.601"><failure message="Failed: Failed: where is a 4 bedroom flat cheaper on average: Palm Jumeirah or Abu Dhabi?">self = Index(['Location', 'Average Price'], dtype='object'), key = 'latitude'
+
+    def get_loc(self, key):
+        """
+        Get integer location, slice or boolean mask for requested label.
+    
+        Parameters
+        ----------
+        key : label
+    
+        Returns
+        -------
+        int if unique index, slice if monotonic index, else mask
+    
+        Examples
+        --------
+        &gt;&gt;&gt; unique_index = pd.Index(list('abc'))
+        &gt;&gt;&gt; unique_index.get_loc('b')
+        1
+    
+        &gt;&gt;&gt; monotonic_index = pd.Index(list('abbc'))
+        &gt;&gt;&gt; monotonic_index.get_loc('b')
+        slice(1, 3, None)
+    
+        &gt;&gt;&gt; non_monotonic_index = pd.Index(list('abcb'))
+        &gt;&gt;&gt; non_monotonic_index.get_loc('b')
+        array([False,  True, False,  True])
+        """
+        casted_key = self._maybe_cast_indexer(key)
+        try:
+&gt;           return self._engine.get_loc(casted_key)
+
+.chatbot_env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3805: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+index.pyx:167: in pandas._libs.index.IndexEngine.get_loc
+    ???
+index.pyx:196: in pandas._libs.index.IndexEngine.get_loc
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7081: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+&gt;   ???
+E   KeyError: 'latitude'
+
+pandas/_libs/hashtable_class_helper.pxi:7089: KeyError
+
+The above exception was the direct cause of the following exception:
+
+query = 'where is a 4 bedroom flat cheaper on average: Palm Jumeirah or Abu Dhabi?'
+query_id = 'line_92'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+&gt;           result = main_agent(query)
+
+tests/test_agent.py:16: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/agent.py:25: in main_agent
+    result = generate_google_maps_html(data)
+src/geo_tools.py:57: in generate_google_maps_html
+    position: {{ lat: {row['latitude']}, lng: {row['longitude']} }},
+.chatbot_env/lib/python3.12/site-packages/pandas/core/series.py:1121: in __getitem__
+    return self._get_value(key)
+.chatbot_env/lib/python3.12/site-packages/pandas/core/series.py:1237: in _get_value
+    loc = self.index.get_loc(label)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Index(['Location', 'Average Price'], dtype='object'), key = 'latitude'
+
+    def get_loc(self, key):
+        """
+        Get integer location, slice or boolean mask for requested label.
+    
+        Parameters
+        ----------
+        key : label
+    
+        Returns
+        -------
+        int if unique index, slice if monotonic index, else mask
+    
+        Examples
+        --------
+        &gt;&gt;&gt; unique_index = pd.Index(list('abc'))
+        &gt;&gt;&gt; unique_index.get_loc('b')
+        1
+    
+        &gt;&gt;&gt; monotonic_index = pd.Index(list('abbc'))
+        &gt;&gt;&gt; monotonic_index.get_loc('b')
+        slice(1, 3, None)
+    
+        &gt;&gt;&gt; non_monotonic_index = pd.Index(list('abcb'))
+        &gt;&gt;&gt; non_monotonic_index.get_loc('b')
+        array([False,  True, False,  True])
+        """
+        casted_key = self._maybe_cast_indexer(key)
+        try:
+            return self._engine.get_loc(casted_key)
+        except KeyError as err:
+            if isinstance(casted_key, slice) or (
+                isinstance(casted_key, abc.Iterable)
+                and any(isinstance(x, slice) for x in casted_key)
+            ):
+                raise InvalidIndexError(key)
+&gt;           raise KeyError(key) from err
+E           KeyError: 'latitude'
+
+.chatbot_env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3812: KeyError
+
+During handling of the above exception, another exception occurred:
+
+query = 'where is a 4 bedroom flat cheaper on average: Palm Jumeirah or Abu Dhabi?'
+query_id = 'line_92'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+            result = main_agent(query)
+            assert result is not None
+        except Exception as e:
+&gt;           pytest.fail(f"Failed: {query}")
+E           Failed: Failed: where is a 4 bedroom flat cheaper on average: Palm Jumeirah or Abu Dhabi?
+
+tests/test_agent.py:19: Failed</failure></testcase><testcase classname="tests.test_agent" name="test_main_agent[line_93]" time="3.712" /><testcase classname="tests.test_agent" name="test_main_agent[line_94]" time="1.509" /><testcase classname="tests.test_agent" name="test_main_agent[line_95]" time="8.390" /><testcase classname="tests.test_agent" name="test_main_agent[line_96]" time="1.490" /><testcase classname="tests.test_agent" name="test_main_agent[line_97]" time="1.504" /><testcase classname="tests.test_agent" name="test_main_agent[line_98]" time="1.722" /><testcase classname="tests.test_agent" name="test_main_agent[line_99]" time="11.604"><failure message="Failed: Failed: where is a 2 bedroom flat cheaper on average: Emirates Hills or Palm Jumeirah?">self = Index(['Location', 'Average Price'], dtype='object'), key = 'latitude'
+
+    def get_loc(self, key):
+        """
+        Get integer location, slice or boolean mask for requested label.
+    
+        Parameters
+        ----------
+        key : label
+    
+        Returns
+        -------
+        int if unique index, slice if monotonic index, else mask
+    
+        Examples
+        --------
+        &gt;&gt;&gt; unique_index = pd.Index(list('abc'))
+        &gt;&gt;&gt; unique_index.get_loc('b')
+        1
+    
+        &gt;&gt;&gt; monotonic_index = pd.Index(list('abbc'))
+        &gt;&gt;&gt; monotonic_index.get_loc('b')
+        slice(1, 3, None)
+    
+        &gt;&gt;&gt; non_monotonic_index = pd.Index(list('abcb'))
+        &gt;&gt;&gt; non_monotonic_index.get_loc('b')
+        array([False,  True, False,  True])
+        """
+        casted_key = self._maybe_cast_indexer(key)
+        try:
+&gt;           return self._engine.get_loc(casted_key)
+
+.chatbot_env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3805: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+index.pyx:167: in pandas._libs.index.IndexEngine.get_loc
+    ???
+index.pyx:196: in pandas._libs.index.IndexEngine.get_loc
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7081: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+&gt;   ???
+E   KeyError: 'latitude'
+
+pandas/_libs/hashtable_class_helper.pxi:7089: KeyError
+
+The above exception was the direct cause of the following exception:
+
+query = 'where is a 2 bedroom flat cheaper on average: Emirates Hills or Palm Jumeirah?'
+query_id = 'line_99'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+&gt;           result = main_agent(query)
+
+tests/test_agent.py:16: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/agent.py:25: in main_agent
+    result = generate_google_maps_html(data)
+src/geo_tools.py:57: in generate_google_maps_html
+    position: {{ lat: {row['latitude']}, lng: {row['longitude']} }},
+.chatbot_env/lib/python3.12/site-packages/pandas/core/series.py:1121: in __getitem__
+    return self._get_value(key)
+.chatbot_env/lib/python3.12/site-packages/pandas/core/series.py:1237: in _get_value
+    loc = self.index.get_loc(label)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Index(['Location', 'Average Price'], dtype='object'), key = 'latitude'
+
+    def get_loc(self, key):
+        """
+        Get integer location, slice or boolean mask for requested label.
+    
+        Parameters
+        ----------
+        key : label
+    
+        Returns
+        -------
+        int if unique index, slice if monotonic index, else mask
+    
+        Examples
+        --------
+        &gt;&gt;&gt; unique_index = pd.Index(list('abc'))
+        &gt;&gt;&gt; unique_index.get_loc('b')
+        1
+    
+        &gt;&gt;&gt; monotonic_index = pd.Index(list('abbc'))
+        &gt;&gt;&gt; monotonic_index.get_loc('b')
+        slice(1, 3, None)
+    
+        &gt;&gt;&gt; non_monotonic_index = pd.Index(list('abcb'))
+        &gt;&gt;&gt; non_monotonic_index.get_loc('b')
+        array([False,  True, False,  True])
+        """
+        casted_key = self._maybe_cast_indexer(key)
+        try:
+            return self._engine.get_loc(casted_key)
+        except KeyError as err:
+            if isinstance(casted_key, slice) or (
+                isinstance(casted_key, abc.Iterable)
+                and any(isinstance(x, slice) for x in casted_key)
+            ):
+                raise InvalidIndexError(key)
+&gt;           raise KeyError(key) from err
+E           KeyError: 'latitude'
+
+.chatbot_env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3812: KeyError
+
+During handling of the above exception, another exception occurred:
+
+query = 'where is a 2 bedroom flat cheaper on average: Emirates Hills or Palm Jumeirah?'
+query_id = 'line_99'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+            result = main_agent(query)
+            assert result is not None
+        except Exception as e:
+&gt;           pytest.fail(f"Failed: {query}")
+E           Failed: Failed: where is a 2 bedroom flat cheaper on average: Emirates Hills or Palm Jumeirah?
+
+tests/test_agent.py:19: Failed</failure></testcase><testcase classname="tests.test_agent" name="test_main_agent[line_100]" time="14.552"><failure message="Failed: Failed: where is a 2 bedroom flat cheaper on average: Sharjah or Umm Al Quwain?">self = Index(['City', 'price'], dtype='object'), key = 'latitude'
+
+    def get_loc(self, key):
+        """
+        Get integer location, slice or boolean mask for requested label.
+    
+        Parameters
+        ----------
+        key : label
+    
+        Returns
+        -------
+        int if unique index, slice if monotonic index, else mask
+    
+        Examples
+        --------
+        &gt;&gt;&gt; unique_index = pd.Index(list('abc'))
+        &gt;&gt;&gt; unique_index.get_loc('b')
+        1
+    
+        &gt;&gt;&gt; monotonic_index = pd.Index(list('abbc'))
+        &gt;&gt;&gt; monotonic_index.get_loc('b')
+        slice(1, 3, None)
+    
+        &gt;&gt;&gt; non_monotonic_index = pd.Index(list('abcb'))
+        &gt;&gt;&gt; non_monotonic_index.get_loc('b')
+        array([False,  True, False,  True])
+        """
+        casted_key = self._maybe_cast_indexer(key)
+        try:
+&gt;           return self._engine.get_loc(casted_key)
+
+.chatbot_env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3805: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+index.pyx:167: in pandas._libs.index.IndexEngine.get_loc
+    ???
+index.pyx:196: in pandas._libs.index.IndexEngine.get_loc
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7081: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+&gt;   ???
+E   KeyError: 'latitude'
+
+pandas/_libs/hashtable_class_helper.pxi:7089: KeyError
+
+The above exception was the direct cause of the following exception:
+
+query = 'where is a 2 bedroom flat cheaper on average: Sharjah or Umm Al Quwain?'
+query_id = 'line_100'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+&gt;           result = main_agent(query)
+
+tests/test_agent.py:16: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/agent.py:25: in main_agent
+    result = generate_google_maps_html(data)
+src/geo_tools.py:57: in generate_google_maps_html
+    position: {{ lat: {row['latitude']}, lng: {row['longitude']} }},
+.chatbot_env/lib/python3.12/site-packages/pandas/core/series.py:1121: in __getitem__
+    return self._get_value(key)
+.chatbot_env/lib/python3.12/site-packages/pandas/core/series.py:1237: in _get_value
+    loc = self.index.get_loc(label)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Index(['City', 'price'], dtype='object'), key = 'latitude'
+
+    def get_loc(self, key):
+        """
+        Get integer location, slice or boolean mask for requested label.
+    
+        Parameters
+        ----------
+        key : label
+    
+        Returns
+        -------
+        int if unique index, slice if monotonic index, else mask
+    
+        Examples
+        --------
+        &gt;&gt;&gt; unique_index = pd.Index(list('abc'))
+        &gt;&gt;&gt; unique_index.get_loc('b')
+        1
+    
+        &gt;&gt;&gt; monotonic_index = pd.Index(list('abbc'))
+        &gt;&gt;&gt; monotonic_index.get_loc('b')
+        slice(1, 3, None)
+    
+        &gt;&gt;&gt; non_monotonic_index = pd.Index(list('abcb'))
+        &gt;&gt;&gt; non_monotonic_index.get_loc('b')
+        array([False,  True, False,  True])
+        """
+        casted_key = self._maybe_cast_indexer(key)
+        try:
+            return self._engine.get_loc(casted_key)
+        except KeyError as err:
+            if isinstance(casted_key, slice) or (
+                isinstance(casted_key, abc.Iterable)
+                and any(isinstance(x, slice) for x in casted_key)
+            ):
+                raise InvalidIndexError(key)
+&gt;           raise KeyError(key) from err
+E           KeyError: 'latitude'
+
+.chatbot_env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3812: KeyError
+
+During handling of the above exception, another exception occurred:
+
+query = 'where is a 2 bedroom flat cheaper on average: Sharjah or Umm Al Quwain?'
+query_id = 'line_100'
+
+    @pytest.mark.parametrize("query,query_id", queries, ids=[qid for _, qid in queries])
+    def test_main_agent(query, query_id):
+        try:
+            result = main_agent(query)
+            assert result is not None
+        except Exception as e:
+&gt;           pytest.fail(f"Failed: {query}")
+E           Failed: Failed: where is a 2 bedroom flat cheaper on average: Sharjah or Umm Al Quwain?
+
+tests/test_agent.py:19: Failed</failure></testcase></testsuite></testsuites>
