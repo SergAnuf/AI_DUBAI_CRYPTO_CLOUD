@@ -17,16 +17,42 @@ from langchain.tools import tool  # If both needed, clarify usage to avoid confl
 from pandasai import SmartDataframe
 
 # Local modules
-from src.process_data import change_data_type
 import pandasai.llm
 import openai
+from src.utils.env_tools import cache_resource
 
-# Usage in 25 defined model used for pandas ai:
-pandas_ai = pandasai.llm.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))  
-official_ai = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+# Constants
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PATH_DATA = os.path.join(BASE_DIR,"..", "data", "uae_real_estate_2024_geo_ready2.parquet")
 
 
 load_dotenv()
+
+
+@cache_resource
+def get_pandas_llm():
+    return pandasai.llm.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+@cache_resource
+def get_openai_llm():
+    return openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+@cache_resource
+def get_smart_dataframe() -> SmartDataframe:
+    data = pd.read_parquet(PATH_DATA)
+    llm = get_pandas_llm()
+    return SmartDataframe(
+        data,
+        config={
+            "llm": llm,
+            "open_charts": False,
+            "enable_cache": True,
+            "verbose": False,
+            "use_error_correction_framework": True,
+            "max_retries": 3,
+        },
+    )
 
 
 DESCRIPTION_SELECT_CALCULATE = """
@@ -62,45 +88,21 @@ Returns tuple:
 
 """
 
-# PATH_DATA = "../data/uae_real_estate_2024.csv"
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# PATH_DATA = os.path.join(BASE_DIR, "..", "data", "uae_real_estate_2024.csv")
-PATH_DATA = os.path.join(BASE_DIR,"..", "data", "uae_real_estate_2024_geo_ready2.parquet")
-
 
 @tool(description=DESCRIPTION_SELECT_CALCULATE)
-def safe_dataframe_tool(
-    query: str,
-) -> Dict[str, Any]:
+def safe_dataframe_tool(query: str) -> Dict[str, Any]:
     """
     Performs calculations on tabular data from CSV.
     Returns results in a JSON-serializable format.
     """
     try:
-        # Configure with error correction
-        llm = pandas_ai
-        # data = change_data_type(pd.read_csv(PATH_DATA))
-        data = pd.read_parquet(PATH_DATA)
-        smart_df = SmartDataframe(data, config={
-            "llm": llm,
-            "open_charts": False,
-            "enable_cache": True,
-            "verbose": False,
-            "use_error_correction_framework": True,
-            "max_retries": 3
-        })
-
-        # Execute query -> Force table only
+        smart_df = get_smart_dataframe()
         result = smart_df.chat(
             f"Return as table: {query}",
             output_type="dataframe"
         )
-        
-        # Convert to JSON-serializable format
         if isinstance(result, pd.DataFrame):
             return result.to_dict(orient="records")
-              
     except Exception as e:
         return {
             "error": str(e),
@@ -141,6 +143,7 @@ def create_plot_code(data: list[dict], query: str) -> str:
     """Generates plotting code using OpenAI"""
     prompt = generate_plot_prompt(data, query)
     
+    official_ai = get_openai_llm()
     response = official_ai.chat.completions.create(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
@@ -157,7 +160,7 @@ def create_plot_code(data: list[dict], query: str) -> str:
         
 @tool(description=DESCRIPTION_PLOT)
 def visualize_tool(data: list[dict], query: str) -> dict:
-    """Executes plotting code and returns results"""
+    """Executes plotting code and returns picture bytes and code"""
     try:
         code = create_plot_code(data, query)
         df = pd.DataFrame(data)
