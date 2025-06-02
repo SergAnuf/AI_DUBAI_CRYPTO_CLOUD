@@ -1,4 +1,5 @@
 .chatbot_env
+chatbot_env2
 .env
 .qodo
 __pycache__/
@@ -9,3 +10,5 @@ exports
 .pytest_cache
 chatbot.egg-info
 .testmondata
+datasets 
+.vscode
