@@ -9,3 +9,7 @@ exports
 .pytest_cache
 chatbot.egg-info
 .testmondata
+chatbot_env2/
+datasets/
+.vscode/
+prompts/__pycache__
