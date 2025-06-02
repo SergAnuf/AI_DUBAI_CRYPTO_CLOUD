@@ -10,16 +10,18 @@ import plotly.express as px
 from dotenv import load_dotenv
 
 # LangChain and OpenAI
-from langchain.agents import tool
+# from langchain.agents import tool
 from langchain.tools import tool  # If both needed, clarify usage to avoid conflict
 
 # pandasai
-from pandasai import SmartDataframe
+import pandasai as pai
 
 # Local modules
-import pandasai.llm
 import openai
 from src.utils.env_tools import cache_resource
+
+from prompts.tool_description import DESCRIPTION_SELECT_CALCULATE, DESCRIPTION_PLOT
+from prompts.plot_prompt import generate_plot_prompt
 
 
 # Constants
@@ -31,112 +33,70 @@ load_dotenv()
 
 
 @cache_resource
-def get_pandas_llm():
-    return pandasai.llm.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-@cache_resource
 def get_openai_llm():
     return openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @cache_resource
-def get_smart_dataframe() -> SmartDataframe:
-    data = pd.read_parquet(PATH_DATA)
-    llm = get_pandas_llm()
-    return SmartDataframe(
-        data,
-        config={
-            "llm": llm,
-            "open_charts": False,
-            "enable_cache": True,
-            "verbose": False,
-            "use_error_correction_framework": True,
-            "max_retries": 3,
-        },
+def load_pandas_ai_dataframe():
+    """Load the real estate dataset from Parquet file."""
+    return pai.load("my-org/properties2")
+
+
+
+def extract_data_intent(user_query: str) -> str:
+    prompt = f"""
+You are a helpful assistant that extracts the data requirements from a user's question.
+
+Only extract and return what data is needed — specifically filtering, aggregation, or selection criteria — without mentioning how the data will be used or visualized.
+
+Return a concise description of the data subset or aggregation to be retrieved.
+
+User query:
+\"\"\"{user_query}\"\"\"
+
+Data intent:
+"""
+
+    official_ai = get_openai_llm()
+    response = official_ai.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": "You extract data intent only. Do not mention visualization or usage."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0,
+        max_tokens=100,
     )
-
-
-DESCRIPTION_SELECT_CALCULATE = """
-Safely query a real estate dataset of Dubai properties. Returns DataFrames only, never visualizations.
-
-Good for:
-- Finding cheapest or most expensive listings
-- Filtering by bedrooms, price, location, etc.
-- Tabular queries
-
-Examples:
-- "Find 10 cheapest properties in Dubai"
-- "Show all villas with 3+ bedrooms and sea view"
-"""
-
-DESCRIPTION_PLOT = """
-Generate visualizations for the Dubai property dataset using Plotly Express.
-
-Good for:
-- Plotting price distributions
-- Comparing average prices by location or property type
-- Time trends
-
-Examples:
-- "Plot price histogram for apartments in Marina"
-- "Show average price by property type"
-
-Returns tuple:
-
-- plotly figure
-- figure type
-- code to generate the figure 
-
-"""
+    
+    return response.choices[0].message.content.strip()
 
 
 @tool(description=DESCRIPTION_SELECT_CALCULATE)
 def safe_dataframe_tool(query: str) -> Dict[str, Any]:
     """
-    Performs calculations on tabular data from CSV.
-    Returns results in a JSON-serializable format.
+    Executes a natural language query on the UAE real estate dataset.
     """
     try:
-        smart_df = get_smart_dataframe()
-        result = smart_df.chat(
-            f"Return as table: {query}",
-            output_type="dataframe"
-        )
-        if isinstance(result, pd.DataFrame):
-            return result.to_dict(orient="records")
+        data = load_pandas_ai_dataframe()  
+        result = data.chat(query).to_dict()
+        
+        if result["error"] is None:
+            return result["value"].to_dict(orient="records")
+        
+        else:
+            return {
+                "error": result["error"],
+                "success": False,
+                "solution": "Check your query syntax or the dataset structure."
+            }
+    
     except Exception as e:
         return {
             "error": str(e),
             "success": False,
-            "solution": "Try simplifying your query or check data columns"
+            "solution": "Check your query syntax or the dataset structure."
         }
 
-
-
-def generate_plot_prompt(data: list[dict], query: str) -> str:
-    """Generates clean plotting code from data (list of dicts) and a query"""
-    columns = ", ".join(data[0].keys())
-    sample = data[:2]  # Show first 2 rows as example
-    
-    return f"""
-Create Plotly Express code to visualize this data:
-Columns: {columns}
-Sample rows: {sample}
-
-Query: "{query}"
-
-Requirements:
-1. First create DataFrame: df = pd.DataFrame(data)
-2. Use px (Plotly Express) which is already imported
-3. Don't modify or filter the data
-4. Save plot to variable 'fig'
-5. Only return the Python code (no text or markdown)
-6. Query can include plotting settings 
-
-Example:
-```python
-df = pd.DataFrame(data)
-fig = px.bar(df, x='country', y='sales', title='Sales by Country')
-fig.update_layout(xaxis_title='Country', yaxis_title='Sales')"""
 
 
 def create_plot_code(data: list[dict], query: str) -> str:
