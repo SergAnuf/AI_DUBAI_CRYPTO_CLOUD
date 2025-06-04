@@ -7,7 +7,7 @@ results = {}
 queries_map = {}
 
 def pytest_sessionstart(session):
-    query_file = Path("tests/queries.txt")
+    query_file = Path("tests/ai_chatbot_real_estate_queries.txt")
     queries = query_file.read_text().splitlines()
     for i, q in enumerate(queries):
         qid = f"line_{i+1}"
@@ -29,7 +29,7 @@ def pytest_runtest_logreport(report):
 
 @pytest.hookimpl(trylast=True)
 def pytest_sessionfinish(session, exitstatus):
-    with open("results_log.txt", "w") as f:
+    with open("results_ai_chatbot_real_estate_queries.txt", "w") as f:
         for nodeid in sorted(results):
             status, query = results[nodeid]
             query_part = f' | "{query}"' if query else ""
