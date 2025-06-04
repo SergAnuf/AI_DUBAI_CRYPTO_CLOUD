@@ -8,7 +8,7 @@ def is_running_in_streamlit():
             return True
     return False
 
-"Important decorator to cache resources in Streamlit runtime. if needed."
+"Important decorator to cache resources in Streamlit runtime, otherwise not."
 def cache_resource(func):
     if is_running_in_streamlit():
         return st.cache_resource(func)

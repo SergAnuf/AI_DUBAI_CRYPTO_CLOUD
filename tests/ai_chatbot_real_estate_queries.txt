@@ -1,0 +1,100 @@
+show on map 1 bedroom properties added in April 2024 in Sharjah
+find 1 bedroom properties added in June 2023 in Palm Jumeirah and locate them on map
+make bar plot of the average property prices in Dubai by the number of rooms
+show on map all 4 bedroom flats in UAE, except for Dubai
+create pie chart of properties available in Ajman, grouped by the number of rooms
+find properties north to Burj Khalifa
+where is a 3 bedroom flat cheaper on average: Ras Al Khaimah or Umm Al Quwain?
+find studio properties added in June 2023 in Dubai Marina and locate them on map
+create pie chart of properties available in Dubai, grouped by the number of rooms
+show properties that are located no further than 1.1 miles from Dubai Mall
+show properties that are located no further than 1.9 miles from Jumeirah Beach
+make bar plot of the average property prices in Abu Dhabi by the number of rooms
+where is a 1 bedroom flat cheaper on average: Umm Al Quwain or Sharjah?
+show properties that are located no further than 1.0 miles from Marina Walk
+create time series plot of the number of properties added in Palm Jumeirah per month
+show on map studio properties added in March 2023 in Fujairah
+show on map all 1 bedroom flats in UAE, except for Sharjah
+find 2 bedroom properties added in June 2024 in Fujairah and locate them on map
+list properties in Umm Al Quwain between 1500000 and 5000000 AED in descending order
+create pie chart of properties available in Dubai Marina, grouped by the number of rooms
+find 2 bedroom properties added in February 2023 in Palm Jumeirah and locate them on map
+create pie chart of properties available in Emirates Hills, grouped by the number of rooms
+where is a 1 bedroom flat cheaper on average: Abu Dhabi or Abu Dhabi?
+show properties that are located no further than 1.8 miles from Burj Al Arab
+where is a 2 bedroom flat cheaper on average: Sharjah or Dubai?
+show properties that are located no further than 1.3 miles from Dubai Eye
+create time series plot of the number of properties added in Dubai per month
+find studio properties added in May 2024 in Dubai Marina and locate them on map
+show properties that are located no further than 1.3 miles from Marina Walk
+show on map 4 bedroom properties added in February 2024 in Dubai Marina
+create time series plot of the number of properties added in Sharjah per month
+create pie chart of properties available in Umm Al Quwain, grouped by the number of rooms
+find properties north to Jumeirah Beach
+list properties in Dubai Marina between 1500000 and 5000000 AED in descending order
+make bar plot of the average property prices in Emirates Hills by the number of rooms
+make bar plot of the average property prices in Fujairah by the number of rooms
+show properties that are located no further than 1.6 miles from Dubai Eye
+find properties north to Dubai Mall
+list properties in Dubai Marina between 1500000 and 3000000 AED in descending order
+list properties in Ras Al Khaimah between 1500000 and 3000000 AED in descending order
+where is a 1 bedroom flat cheaper on average: Fujairah or Fujairah?
+create pie chart of properties available in Emirates Hills, grouped by the number of rooms
+show on map 4 bedroom properties added in January 2023 in Fujairah
+make bar plot of the average property prices in Dubai by the number of rooms
+create time series plot of the number of properties added in Fujairah per month
+find properties north to Burj Al Arab
+make bar plot of the average property prices in Abu Dhabi by the number of rooms
+create pie chart of properties available in Palm Jumeirah, grouped by the number of rooms
+create time series plot of the number of properties added in Emirates Hills per month
+find 2 bedroom properties added in April 2024 in Ajman and locate them on map
+make bar plot of the average property prices in Palm Jumeirah by the number of rooms
+show on map all 3 bedroom flats in UAE, except for Abu Dhabi
+find 4 bedroom properties added in January 2023 in Emirates Hills and locate them on map
+show on map all 1 bedroom flats in UAE, except for Dubai
+make bar plot of the average property prices in Umm Al Quwain by the number of rooms
+show on map all 3 bedroom flats in UAE, except for Dubai
+show on map all 2 bedroom flats in UAE, except for Ras Al Khaimah
+show properties that are located no further than 1.3 miles from Global Village
+find properties north to Burj Al Arab
+make bar plot of the average property prices in Umm Al Quwain by the number of rooms
+create pie chart of properties available in Palm Jumeirah, grouped by the number of rooms
+create time series plot of the number of properties added in Ras Al Khaimah per month
+show on map 3 bedroom properties added in March 2023 in Ras Al Khaimah
+make bar plot of the average property prices in Abu Dhabi by the number of rooms
+show on map 3 bedroom properties added in February 2024 in Dubai
+show on map 2 bedroom properties added in April 2023 in Palm Jumeirah
+make bar plot of the average property prices in Ajman by the number of rooms
+show properties that are located no further than 0.7 miles from Marina Walk
+find properties north to Burj Al Arab
+create time series plot of the number of properties added in Dubai per month
+create pie chart of properties available in Palm Jumeirah, grouped by the number of rooms
+create pie chart of properties available in Umm Al Quwain, grouped by the number of rooms
+create time series plot of the number of properties added in Ras Al Khaimah per month
+find 3 bedroom properties added in March 2024 in Sharjah and locate them on map
+find properties north to Burj Khalifa
+where is a 4 bedroom flat cheaper on average: Ras Al Khaimah or Umm Al Quwain?
+find properties north to Dubai Eye
+show on map 4 bedroom properties added in June 2023 in Dubai
+show on map all 3 bedroom flats in UAE, except for Palm Jumeirah
+find properties north to Dubai Mall
+find studio properties added in May 2024 in Emirates Hills and locate them on map
+list properties in Ras Al Khaimah between 1500000 and 3000000 AED in descending order
+create pie chart of properties available in Fujairah, grouped by the number of rooms
+show on map all 3 bedroom flats in UAE, except for Umm Al Quwain
+create pie chart of properties available in Emirates Hills, grouped by the number of rooms
+show properties that are located no further than 1.6 miles from Burj Khalifa
+show on map 4 bedroom properties added in February 2024 in Abu Dhabi
+create time series plot of the number of properties added in Emirates Hills per month
+list properties in Sharjah between 1000000 and 2000000 AED in descending order
+find properties north to Jumeirah Beach
+show on map 3 bedroom properties added in June 2023 in Dubai Marina
+where is a 4 bedroom flat cheaper on average: Palm Jumeirah or Abu Dhabi?
+make bar plot of the average property prices in Fujairah by the number of rooms
+find properties north to Dubai Mall
+show on map 1 bedroom properties added in January 2024 in Palm Jumeirah
+make bar plot of the average property prices in Umm Al Quwain by the number of rooms
+find properties north to Dubai Mall
+show on map all 4 bedroom flats in UAE, except for Dubai
+where is a 2 bedroom flat cheaper on average: Emirates Hills or Palm Jumeirah?
+where is a 2 bedroom flat cheaper on average: Sharjah or Umm Al Quwain?

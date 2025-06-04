@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 def load_queries():
-    query_file = Path("tests/queries.txt")
+    query_file = Path("tests/ai_chatbot_real_estate_queries.txt")
     queries = query_file.read_text().splitlines()
     return [(q.strip(), f"line_{i+1}") for i, q in enumerate(queries) if q.strip()]
 
@@ -20,4 +20,4 @@ def test_main_agent(query, query_id):
 
 # Force testmon to track the queries file
 def pytest_sessionstart(session):
-    session.config.testmon.addchange("tests/queries.txt")
+    session.config.testmon.addchange("tests/ai_chatbot_real_estate_queries.txt")

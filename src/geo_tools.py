@@ -95,3 +95,81 @@ def generate_google_maps_html(input_data, api_key=os.getenv("GOOGLE_API_KEY")):
     </html>
     """
     return html
+
+
+
+
+# import os
+# import time
+# import googlemaps
+# import pandas as pd
+# from time import sleep
+# from functools import lru_cache
+
+# # Initialize Google Maps client
+# gmaps = googlemaps.Client(key=os.getenv("GOOGLE_API_KEY"))
+
+# # Safe, rate-limited reverse geocode with retry
+# @lru_cache(maxsize=10000)
+# def cached_reverse_geocode(lat: float, lng: float, retries=3, delay=0.5) -> dict:
+#     for attempt in range(retries):
+#         try:
+#             sleep(0.15)  # Respect Google's ~10 req/sec limit
+#             result = gmaps.reverse_geocode((lat, lng))
+#             return result[0] if result else None
+#         except Exception as e:
+#             if attempt < retries - 1:
+#                 time.sleep(delay)
+#             else:
+#                 print(f"Geocoding failed after {retries} attempts for ({lat}, {lng}): {e}")
+#                 return None
+
+# # Parse the API response into useful fields
+# def parse_gmaps_response(response: dict) -> dict:
+#     if not response or 'address_components' not in response:
+#         return {
+#             'building_name': None,
+#             'street_name': None,
+#             'community_name': None,
+#             'emirate': None,
+#             'full_address': None
+#         }
+
+#     components = response['address_components']
+    
+#     def get_component_by_type(target_type):
+#         for comp in components:
+#             if target_type in comp['types']:
+#                 return comp['long_name']
+#         return None
+
+#     return {
+#         'building_name': get_component_by_type('premise') or get_component_by_type('plus_code') or get_component_by_type('establishment'),
+#         'street_name': get_component_by_type('route'),
+#         'community_name': get_component_by_type('sublocality') or get_component_by_type('neighborhood'),
+#         'emirate': get_component_by_type('administrative_area_level_1'),
+#         'full_address': response.get('formatted_address', '')
+#     }
+
+
+# # Apply function for a row of the DataFrame
+# def enrich_with_gmaps(row):
+#     try:
+#         response = cached_reverse_geocode(row['latitude'], row['longitude'])
+#         parsed = parse_gmaps_response(response)
+#     except Exception as e:
+#         print(f"Row failed at ({row['latitude']}, {row['longitude']}): {e}")
+#         parsed = {
+#             'building_name': None,
+#             'street_name': None,
+#             'community_name': None,
+#             'emirate': None,
+#             'full_address': None
+#         }
+#     return pd.Series(parsed)
+
+# # Apply to your DataFrame
+# df[['building_name', 'street_name', 'community_name', 'emirate', 'full_address']] = (
+#     df.apply(enrich_with_gmaps, axis=1)
+# )
+
