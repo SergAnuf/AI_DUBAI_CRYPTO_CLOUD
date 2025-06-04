@@ -48,6 +48,8 @@ set_pandas_llm()
 def standard_response(success: bool, result=None, error=None, solution=None) -> str:
     if isinstance(result, pd.DataFrame):
         result = json.loads(result.to_json(date_format='iso', orient='records'))  # Parse into list of dicts
+    elif isinstance(result, pd.Series):
+        result = result.to_dict()  # convert Series to dict
     return json.dumps({
         "success": success,
         "result": result if success else None,
@@ -135,6 +137,10 @@ def create_plotly_code(input_json: str):
     result = parsed["data"]
     user_input = parsed["query"]
     # Prepare data
+    if isinstance(result, dict):
+        # Wrap in list to make it a single-row DataFrame
+        result = [result]
+        
     data = pd.DataFrame(result)
     
     # Create prompt (using your exact format)

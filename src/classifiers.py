@@ -30,7 +30,7 @@ Your answer:
 def llm_classifier(query: str) -> str:
     # LLM classification
     prompt = f"""
-You are a classifier that decides how to handle the query about Dubai properties.
+You are a classifier that decides how to handle the query about UAE properties.
 
 Return one of three strings ONLY:
 - "output" (just output data),
