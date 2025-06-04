@@ -1,35 +1,31 @@
 # Standard libraries
 import os
-import io
-from typing import Dict, Any
+import json
+from typing import Optional
+from dotenv import load_dotenv 
 
 # Third-party libraries
+import openai
+import pandasai as pai
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
-from dotenv import load_dotenv
+from langchain.tools import tool 
+import matplotlib.pyplot as plt
+from pandasai_openai import OpenAI
 
-# LangChain and OpenAI
-# from langchain.agents import tool
-from langchain.tools import tool  # If both needed, clarify usage to avoid conflict
-
-# pandasai
-import pandasai as pai
 
 # Local modules
-import openai
 from src.utils.env_tools import cache_resource
+from prompts.tool_description import DESCRIPTION_GET_USER_DATA_REQUIREMENTS, \
+                                     DESCRIPTION_GET_DATA,\
+                                     DESCRIPTON_GENERATE_PLOT_CODE
+                                     
+load_dotenv()   
 
-from prompts.tool_description import DESCRIPTION_SELECT_CALCULATE, DESCRIPTION_PLOT
-from prompts.plot_prompt import generate_plot_prompt
-
-
-# Constants
+                             
+# Global Constants
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PATH_DATA = os.path.join(BASE_DIR,"..", "data", "uae_real_estate_2024_geo_ready2.parquet")
-
-
-load_dotenv()
 
 
 @cache_resource
@@ -38,11 +34,29 @@ def get_openai_llm():
 
 @cache_resource
 def load_pandas_ai_dataframe():
-    """Load the real estate dataset from Parquet file."""
-    return pai.load("my-org/properties2")
+    """Load the real estate dataset from created Pandas AI directory."""
+    return pai.load("my-org/clean2")
+
+def set_pandas_llm():
+    llm = OpenAI(api_token=os.getenv("OPENAI_API_KEY"),model="gpt-4")
+    pai.config.set({"llm": llm})
 
 
+set_pandas_llm()
 
+
+def standard_response(success: bool, result=None, error=None, solution=None) -> str:
+    if isinstance(result, pd.DataFrame):
+        result = json.loads(result.to_json(date_format='iso', orient='records'))  # Parse into list of dicts
+    return json.dumps({
+        "success": success,
+        "result": result if success else None,
+        "error": None if success else error,
+        "solution": None if success else solution
+    })
+    
+    
+@tool(description=DESCRIPTION_GET_USER_DATA_REQUIREMENTS)
 def extract_data_intent(user_query: str) -> str:
     prompt = f"""
 You are a helpful assistant that extracts the data requirements from a user's question.
@@ -70,91 +84,84 @@ Data intent:
     
     return response.choices[0].message.content.strip()
 
-
-@tool(description=DESCRIPTION_SELECT_CALCULATE)
-def safe_dataframe_tool(query: str) -> Dict[str, Any]:
+@tool(description=DESCRIPTION_GET_DATA)
+def safe_dataframe_tool(query: str) -> str:
     """
     Executes a natural language query on the UAE real estate dataset.
+    Returns a standardized JSON-formatted string.
     """
-    try:
-        data = load_pandas_ai_dataframe()  
+    try: 
+        data = load_pandas_ai_dataframe()
         result = data.chat(query).to_dict()
-        
-        if result["error"] is None:
-            return result["value"].to_dict(orient="records")
-        
+
+        if result["error"] is None and "value" in result:
+            return standard_response(
+                success=True,
+                result=result["value"]
+            )
         else:
-            return {
-                "error": result["error"],
-                "success": False,
-                "solution": "Check your query syntax or the dataset structure."
-            }
-    
+            return standard_response(
+                success=False,
+                error=result["error"],
+                solution="Check your query syntax or the dataset structure."
+            )
+
     except Exception as e:
-        return {
-            "error": str(e),
-            "success": False,
-            "solution": "Check your query syntax or the dataset structure."
-        }
+        return standard_response(
+            success=False,
+            error=str(e),
+            solution="Check your query syntax or the dataset structure."
+        )
 
 
 
-def create_plot_code(data: list[dict], query: str) -> str:
-    """Generates plotting code using OpenAI"""
-    prompt = generate_plot_prompt(data, query)
+def extract_python_code(text: str) -> Optional[str]:
+    """
+    Extract Python code from markdown code blocks.
+    Returns None if no code found.
+    """
+    if '```python' in text:
+        return text.split('```python')[1].split('```')[0].strip()
+    elif '```' in text:
+        return text.split('```')[1].split('```')[0].strip()
+    return None
+
+
+@tool(description=DESCRIPTON_GENERATE_PLOT_CODE)
+def create_plotly_code(input_json: str):
+    """Generate and execute Plotly code using your exact prompt format"""
     
+    parsed = json.loads(input_json)
+    result = parsed["data"]
+    user_input = parsed["query"]
+    # Prepare data
+    data = pd.DataFrame(result)
+    
+    # Create prompt (using your exact format)
+    code_prompt = f"""
+        Generate the code <code> for plotting the data, {data}, in plotly,
+        in the format requested by: {user_input}.
+        The solution should be given using plotly and only plotly.
+        Do not use matplotlib. Return the code <code> in the following
+        format python <code>
+    """
+    # Get AI response
     official_ai = get_openai_llm()
     response = official_ai.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
+        model="gpt-4",
+        messages=[{"role": "user", "content": code_prompt}],
+        max_tokens=1000
     )
     
-    code = response.choices[0].message.content
-    code = code.replace("```python", "").replace("```", "")
-    code = code.strip()
-    
-    return code
-    
-    
-        
-        
-@tool(description=DESCRIPTION_PLOT)
-def visualize_tool(data: list[dict], query: str) -> dict:
-    """Executes plotting code and returns picture bytes and code"""
-    try:
-        code = create_plot_code(data, query)
-        df = pd.DataFrame(data)
-        
-        exec_globals = {
-            "pd": pd,
-            "px": px,
-            "go": go,
-            "data": data,
-            "df": df
-        }
-        exec(code, exec_globals)
-        
-        fig = exec_globals.get("fig")
-        if fig is None:
-            raise ValueError("No figure was created - missing 'fig' variable")
-        
-        buf = io.BytesIO()
-        if hasattr(fig, "write_image"):  # Plotly
-            fig.write_image(buf, format="png")
-        else:
-            raise ValueError(f"Unsupported figure type: {type(fig)}")
-        
-        buf.seek(0)  # Reset buffer position for reading in Streamlit
+    # Extract code
+    raw_response = response.choices[0].message.content
+    code = extract_python_code(raw_response)
 
-        return {
-            "image_bytes": buf,  # Return BytesIO object instead of base64 string
-            "code": code,
-            "success": True
-        }
-        
-    except Exception as e:
-        return {
-            "error": str(e),
-            "code": code if 'code' in locals() else "",
-            "success": False
-        }
+    # Modify code for Streamlit
+    code = code.replace("fig.show()", "")
+    code += "\nst.plotly_chart(fig, use_container_width=True)"
+    
+    return standard_response(
+                success=True,
+                result=code
+            )

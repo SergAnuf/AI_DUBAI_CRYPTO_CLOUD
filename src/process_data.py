@@ -14,6 +14,7 @@ def change_data_type(data):
     df['furnishing'] = df['furnishing'].astype('category')  # 3 values: YES, NO, PARTLY
     df['description'] = df['description'].astype('string')  # Free-text column
     df["displayAddress"] = df["displayAddress"].astype("string")  # Free-text column
+    df['addedOn'] = df['addedOn'].dt.strftime('%Y-%m-%dT%H:%M:%S')
     df["title"] = df["title"].astype("string")  # Free-text column
     df["City"] = df["displayAddress"].apply(lambda x: x.split(",")[-1].strip()) # add city column
     

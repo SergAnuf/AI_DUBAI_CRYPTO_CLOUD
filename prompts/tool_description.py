@@ -1,8 +1,6 @@
-""" Tool descriptions for the Dubai real estate dataset queries. """
+# This file contains descriptions for various tools used in the application.
 
-
-
-DESCRIPTION_SELECT_CALCULATE = """
+DESCRIPTION_GET_DATA = """
 Safely query a real estate dataset of Dubai properties. Returns DataFrames only, never visualizations.
 
 Good for:
@@ -15,7 +13,13 @@ Examples:
 - "Show all villas with 3+ bedrooms and sea view"
 """
 
-DESCRIPTION_PLOT = """
+
+DESCRIPTON_GENERATE_PLOT_CODE = """
+Create Python code to generate a Matplolib figure based on a query and dataset.
+"""
+
+
+DESCRIPTION_CREATE_PLOT = """
 Generate visualizations for the Dubai property dataset using Plotly Express.
 
 Good for:
@@ -33,4 +37,9 @@ Returns tuple:
 - figure type
 - code to generate the figure 
 
+"""
+
+DESCRIPTION_GET_USER_DATA_REQUIREMENTS = """
+Given a user query, extract the data requirements without mentioning how the data will be used or visualized.
+Return a concise description of the data subset or aggregation to be retrieved.
 """
