@@ -1,52 +1,70 @@
 import openai
 import os
+from dotenv import load_dotenv
+from prompts.classifiers import spam_prompt, task_prompt
+from openai.types.chat import ChatCompletionUserMessageParam
 
+# Load environment variables from a .env file
+load_dotenv()
 
-
+# Initialize the OpenAI client using the API key from environment variables
 official_ai = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def is_uae_real_estate_query(query: str) -> bool:
-    prompt = f"""
-You are a classifier that decides whether a query is about real estate in the UAE (e.g., Dubai, Abu Dhabi).
+    """
+    Determines if a given query is related to UAE real estate.
 
-Return ONLY "yes" or "no".
+    Args:
+        query (str): The user query to classify.
 
-Query: "{query}"
+    Returns:
+        bool: True if the query is classified as related to UAE real estate, False otherwise.
+    """
+    # Generate a prompt for the query using the spam_prompt function
+    prompt = spam_prompt(query)
 
-Your answer:
-"""
+    # Send the prompt to the OpenAI API and get the response
     response = official_ai.chat.completions.create(
         model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
+        messages=[ChatCompletionUserMessageParam(role="user", content=prompt)],
         temperature=0,
         max_tokens=3,
     )
+
+    # Extract and normalize the decision from the API response
     decision = response.choices[0].message.content.strip().lower()
+
+    # Return True if the decision is "yes", otherwise False
     return decision == "yes"
 
 
-
 def llm_classifier(query: str) -> str:
-    # LLM classification
-    prompt = f"""
-You are a classifier that decides how to handle the query about UAE properties.
+    """
+    Classifies a given query using a large language model (LLM).
 
-Return one of three strings ONLY:
-- "output" (just output data),
-- "plot_stats" (plot statistics like histograms, bar charts),
-- "geospatial_plot" (plot maps/geospatial charts).
+    Args:
+        query (str): The user query to classify.
 
-Query: "{query}"
+    Returns:
+        str: The classification result as a string.
+    """
+    # Generate a prompt for the query using the task_prompt function
+    prompt = task_prompt(query)
 
-Your answer:
-"""
+    # Send the prompt to the OpenAI API and get the response
     response = official_ai.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
+        model="gpt-4.1-mini",
+        messages=[ChatCompletionUserMessageParam(role="user", content=prompt)],
         temperature=0,
         max_tokens=10,
     )
+
+    # Extract, clean, and normalize the decision from the API response
     decision = response.choices[0].message.content.strip().strip('"').lower()
+
+    # Print the decision for debugging purposes
     print(decision)
+
+    # Return the classification result
     return decision

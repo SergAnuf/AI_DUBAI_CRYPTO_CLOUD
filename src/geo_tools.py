@@ -3,54 +3,87 @@ from tqdm import tqdm
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut, GeocoderServiceError
 import time
-import os 
+import os
 from dotenv import load_dotenv
 
-# Initialize tqdm for pandas
+# Initialize tqdm for pandas to enable progress bars for DataFrame operations
 tqdm.pandas()
+
+# Load environment variables from a .env file
 load_dotenv()
 
 
-# Define geocoding function
 def get_lat_long(address):
+    """
+    Retrieves the latitude and longitude for a given address using the Nominatim geocoding service.
+
+    Args:
+        address (str): The address to geocode.
+
+    Returns: tuple: A tuple containing the latitude and longitude as floats, or (None, None) if the address could not
+    be geocoded.
+    """
     try:
+        # Initialize the Nominatim geolocator with a user agent and timeout
         geolocator = Nominatim(user_agent="unique_app_name_123", timeout=10)
+        # Perform geocoding to get the location
         location = geolocator.geocode(address)
         if location:
+            # Return latitude and longitude if the location is found
             return location.latitude, location.longitude
         else:
-            return None, None  # Ensure consistent tuple return
+            # Return None for both values if the location is not found
+            return None, None
     except (GeocoderTimedOut, GeocoderServiceError) as e:
+        # Handle geocoding errors and print the error message
         print(f"Geocoding error: {e}")
         return None, None
 
 
-
 def safe_get_lat_long(address):
-    # Example usage with DataFrame:
-    # Extract latitude and longitude from the "displayAddress" column
-    # and assign them to new columns "latitude" and "longitude"
-    # data[["latitude", "longitude"]] = data["displayAddress"].progress_apply(
-    #     lambda x: pd.Series(safe_get_lat_long(x))
-    # )
+    """
+    Safely retrieves the latitude and longitude for a given address, handling null values and rate limits.
+
+    Args:
+        address (str): The address to geocode.
+
+    Returns: tuple: A tuple containing the latitude and longitude as floats, or (None, None) if the address could not
+    be geocoded.
+    """
+    # Check if the address is null and return None for both values if so
     if pd.isnull(address):
         return None, None
     try:
+        # Call the get_lat_long function to retrieve latitude and longitude
         lat_lon = get_lat_long(address)
-        time.sleep(1)  # Respect rate limit
+        # Respect rate limits by adding a delay
+        time.sleep(1)
+        # Return the retrieved values or (None, None) if no values are found
         return lat_lon if lat_lon else (None, None)
     except Exception as e:
+        # Handle any unexpected errors and print the error message
         print(f"Error for address '{address}': {e}")
         return None, None
 
 
-    
 def generate_google_maps_html(input_data, api_key=os.getenv("GOOGLE_API_KEY")):
-    
+    """
+    Generates an HTML page with a Google Maps visualization of the provided locations.
+
+    Args: input_data (list of dict): A list of dictionaries containing location data with keys "latitude",
+    "longitude", and "title". api_key (str): The Google Maps API key. Defaults to the value of the "GOOGLE_API_KEY"
+    environment variable.
+
+    Returns:
+        str: An HTML string containing the Google Maps visualization.
+    """
+    # Convert the input data into a pandas DataFrame
     locations = pd.DataFrame(input_data)
     if locations.empty:
+        # Return a simple HTML message if no locations are provided
         return "<html><body><h1>No locations provided</h1></body></html>"
-    
+
+    # Generate JavaScript code for markers and info windows
     markers_js = "\n".join([
         f"""
         var marker_{i} = new google.maps.Marker({{
@@ -69,6 +102,7 @@ def generate_google_maps_html(input_data, api_key=os.getenv("GOOGLE_API_KEY")):
         for i, row in locations.iterrows()
     ])
 
+    # Generate the complete HTML for the map
     html = f"""
     <html>
     <head>
@@ -94,82 +128,5 @@ def generate_google_maps_html(input_data, api_key=os.getenv("GOOGLE_API_KEY")):
     </body>
     </html>
     """
+    # Return the generated HTML string
     return html
-
-
-
-
-# import os
-# import time
-# import googlemaps
-# import pandas as pd
-# from time import sleep
-# from functools import lru_cache
-
-# # Initialize Google Maps client
-# gmaps = googlemaps.Client(key=os.getenv("GOOGLE_API_KEY"))
-
-# # Safe, rate-limited reverse geocode with retry
-# @lru_cache(maxsize=10000)
-# def cached_reverse_geocode(lat: float, lng: float, retries=3, delay=0.5) -> dict:
-#     for attempt in range(retries):
-#         try:
-#             sleep(0.15)  # Respect Google's ~10 req/sec limit
-#             result = gmaps.reverse_geocode((lat, lng))
-#             return result[0] if result else None
-#         except Exception as e:
-#             if attempt < retries - 1:
-#                 time.sleep(delay)
-#             else:
-#                 print(f"Geocoding failed after {retries} attempts for ({lat}, {lng}): {e}")
-#                 return None
-
-# # Parse the API response into useful fields
-# def parse_gmaps_response(response: dict) -> dict:
-#     if not response or 'address_components' not in response:
-#         return {
-#             'building_name': None,
-#             'street_name': None,
-#             'community_name': None,
-#             'emirate': None,
-#             'full_address': None
-#         }
-
-#     components = response['address_components']
-    
-#     def get_component_by_type(target_type):
-#         for comp in components:
-#             if target_type in comp['types']:
-#                 return comp['long_name']
-#         return None
-
-#     return {
-#         'building_name': get_component_by_type('premise') or get_component_by_type('plus_code') or get_component_by_type('establishment'),
-#         'street_name': get_component_by_type('route'),
-#         'community_name': get_component_by_type('sublocality') or get_component_by_type('neighborhood'),
-#         'emirate': get_component_by_type('administrative_area_level_1'),
-#         'full_address': response.get('formatted_address', '')
-#     }
-
-
-# # Apply function for a row of the DataFrame
-# def enrich_with_gmaps(row):
-#     try:
-#         response = cached_reverse_geocode(row['latitude'], row['longitude'])
-#         parsed = parse_gmaps_response(response)
-#     except Exception as e:
-#         print(f"Row failed at ({row['latitude']}, {row['longitude']}): {e}")
-#         parsed = {
-#             'building_name': None,
-#             'street_name': None,
-#             'community_name': None,
-#             'emirate': None,
-#             'full_address': None
-#         }
-#     return pd.Series(parsed)
-
-# # Apply to your DataFrame
-# df[['building_name', 'street_name', 'community_name', 'emirate', 'full_address']] = (
-#     df.apply(enrich_with_gmaps, axis=1)
-# )
-
