@@ -121,6 +121,5 @@ def get_plotly_code_prompt(user_input: str, data: pd.DataFrame) -> str:
         in the format requested by: {user_input}.
         The solution should be given using plotly and only plotly.
         Do not use matplotlib. Return the code <code> in the following
-        Do not make any data transformations, just plot the data as it is.
         format python <code>
     """
