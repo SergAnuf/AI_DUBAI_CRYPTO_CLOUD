@@ -34,7 +34,7 @@ def load_pandas_ai_dataframe():
 
 
 def set_pandas_llm():
-    llm = OpenAI(api_token=os.getenv("OPENAI_API_KEY"), model="gpt-4")
+    llm = OpenAI(api_token=os.getenv("OPENAI_API_KEY"), model="gpt-4", temperature=0)
     pai.config.set({"llm": llm})
 
 
@@ -148,6 +148,7 @@ def create_plotly_code(input_json: str):
                                              content="You create Plotly code based on user_input and data"),
             ChatCompletionUserMessageParam(role="user", content=code_prompt)
         ],
+        temperature=0,
         max_tokens=400
     )
     # Extract code
