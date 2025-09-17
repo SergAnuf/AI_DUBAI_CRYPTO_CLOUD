@@ -13,13 +13,13 @@ official_ai = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def is_uae_real_estate_query(query: str) -> bool:
     """
-    Determines if a given query is related to UAE real estate.
+    Determines if a given query is related to London real estate.
 
     Args:
         query (str): The user query to classify.
 
     Returns:
-        bool: True if the query is classified as related to UAE real estate, False otherwise.
+        bool: True if the query is classified as related to London real estate, False otherwise.
     """
     # Generate a prompt for the query using the spam_prompt function
     prompt = spam_prompt(query)

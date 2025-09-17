@@ -1,7 +1,7 @@
 # This file contains descriptions for various tools used in the application.
 
 DESCRIPTION_GET_DATA = """
-Safely query a real estate dataset of Dubai properties. Returns DataFrames only, never visualizations.
+Safely query a real estate dataset of London properties. Returns DataFrames only, never visualizations.
 
 Good for:
 - Finding cheapest or most expensive listings
@@ -9,7 +9,7 @@ Good for:
 - Tabular queries
 
 Examples:
-- "Find 10 cheapest properties in Dubai"
+- "Find 10 cheapest properties in London"
 - "Show all villas with 3+ bedrooms and sea view"
 """
 
@@ -20,7 +20,7 @@ Create Python code to generate a Matplolib figure based on a query and dataset.
 
 
 DESCRIPTION_CREATE_PLOT = """
-Generate visualizations for the Dubai property dataset using Plotly Express.
+Generate visualizations for the London property dataset using Plotly Express.
 
 Good for:
 - Plotting price distributions
