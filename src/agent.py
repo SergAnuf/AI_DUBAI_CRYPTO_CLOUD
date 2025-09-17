@@ -64,7 +64,9 @@ def main_agent(query: str):
 
     elif action == "geospatial_plot":
         # Generate and return a geospatial plot as HTML
-        if len(data_dict["result"]) < 50:
+        if data_dict["result"] is None or len(data_dict["result"]) == 0:
+            return {"type": "output", "data": "No properties found. Please redefine your search"}
+        elif len(data_dict["result"]) < 50:
             html = generate_google_maps_html(data_dict["result"])
             return {"type": "html", "content": html}
         else:
