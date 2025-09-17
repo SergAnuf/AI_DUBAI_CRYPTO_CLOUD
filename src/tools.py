@@ -30,7 +30,7 @@ def get_openai_llm():
 @cache_resource
 def load_pandas_ai_dataframe():
     """Load the real estate dataset from created Pandas AI directory."""
-    return pai.load("my-org/clean2")
+    return pai.load("new-bot/london-rental-data")
 
 
 def set_pandas_llm():
@@ -74,7 +74,7 @@ def extract_data_intent(user_query: str) -> str:
 @tool(description=DESCRIPTION_GET_DATA)
 def safe_dataframe_tool(query: str) -> str:
     """
-    Executes a natural language query on the UAE real estate dataset.
+    Executes a natural language query on the London real estate dataset.
     Returns a standardized JSON-formatted string.
     """
     try:
@@ -152,9 +152,7 @@ def create_plotly_code(input_json: str):
     )
     # Extract code
     raw_response = response.choices[0].message.content
-    print("raw_response:", raw_response)
     code = extract_python_code(raw_response)
-    print("code:", code)
     # Modify code for Streamlit
     code = code.replace("fig.show()", "")
     code += "\nst.plotly_chart(fig, use_container_width=True)"

@@ -1,15 +1,16 @@
 import streamlit as st
 from src.agent import main_agent
 import streamlit.components.v1 as components
+import pandas as pd
 
 # Set the page configuration for the Streamlit app
-st.set_page_config(page_title="UAE Real Estate Chat", layout="wide")
+st.set_page_config(page_title="London Real Estate Chat", layout="wide")
 
 # UI Elements
 # Display the main title of the application
-st.markdown("<h1 style='font-size: 70px;'>🏠 UAE Real Estate Chat Assistant</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='font-size: 70px;'>🏠 London Real Estate Chat Assistant</h1>", unsafe_allow_html=True)
 # Display a subtitle describing the purpose of the application
-st.markdown("<p style='font-size: 50px;'>Ask questions about the UAE real estate market data</p>", unsafe_allow_html=True)
+st.markdown("<p style='font-size: 50px;'>Ask questions about the London real estate market data</p>", unsafe_allow_html=True)
 
 # Query input
 # Display a label for the query input field
@@ -43,7 +44,9 @@ if query:
     elif result["type"] == "plot":
         # Execute and render the plot code if the result is of type "plot"
         plot_code = result.get("result")
-        exec(plot_code)
+        df = pd.DataFrame(result.get("data"))
+        exec_globals = {"pd": pd, "px": __import__("plotly.express"), "st": st, "df": df}
+        exec(plot_code, exec_globals)
 
     elif result["type"] == "html":
         # Render HTML content if the result is of type "html"
