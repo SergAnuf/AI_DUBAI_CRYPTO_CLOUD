@@ -8,12 +8,23 @@ def load_data():
     return pd.read_parquet('s3://anufriev/sample_data.parquet', engine='pyarrow')
 
 
-def format_query_with_table_output(original_query):
+# def format_query_with_table_output(original_query):
+#     table_format_instruction = """
+# Output format:
+# Present the results in a structured **table format**
+# """
+#     return original_query + table_format_instruction
+
+
+def format_query_with_table_output(original_query: str) -> str:
     table_format_instruction = """
-Output format:  
-Present the results in a structured **table format**   
+Output format requirement:
+- Present all results strictly as a table (rows and columns).
+- Do not return plain text, bullet points, or prose.
+- If there is only one value, still return it as a one-row, one-column table.
+- Use clear column headers.
 """
-    return original_query + table_format_instruction
+    return original_query.strip() + "\n\n" + table_format_instruction
 
 
 SCHEMA_YAML_CONTENT = """
