@@ -1,7 +1,8 @@
 # Standard libraries
 import os
 import json
-from typing import Optional
+from collections import deque
+from typing import Optional, Union
 from dotenv import load_dotenv
 
 # Third-party libraries
@@ -162,3 +163,53 @@ def create_plotly_code(input_json: str):
         success=True,
         result=code
     )
+
+
+def contextualize_query(query: str, history: Union[deque, list]) -> str:
+    """
+    Rewrite the new user query into a standalone natural-language question
+    using the conversation history (deque).
+    If no history exists, return the query unchanged.
+    """
+
+    # No history → nothing to contextualize
+    if len(history) < 2:
+        return query
+
+    # Build conversation text from full history
+    history_text = ""
+    for msg in history:
+        role = "User" if msg["role"] == "user" else "Assistant"
+        history_text += f"{role}: {msg['content']}\n"
+
+    # Prompt for the LLM
+    code_prompt = f"""
+You are a query rewriter for a London real estate chatbot.
+Rewrite the latest user request into a complete standalone query
+that makes sense without the conversation history.
+
+Conversation so far:
+{history_text}
+
+Latest user query:
+{query}
+
+Rewritten standalone query:
+"""
+    official_ai = get_openai_llm()
+    # Call LLM
+    response = official_ai.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=[
+            ChatCompletionSystemMessageParam(
+                role="system",
+                content="You rewrite follow-up queries into standalone natural-language queries for PandasAI."
+            ),
+            ChatCompletionUserMessageParam(role="user", content=code_prompt)
+        ],
+        temperature=0,
+        max_tokens=500
+    )
+
+    rewritten = response.choices[0].message.content.strip()
+    return rewritten or query  # fallback if model returns empty
