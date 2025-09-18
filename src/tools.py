@@ -31,7 +31,7 @@ def get_openai_llm():
 @cache_resource
 def load_pandas_ai_dataframe():
     """Load the real estate dataset from created Pandas AI directory."""
-    return pai.load("new-bot/london-rental-data")
+    return pai.load("new-bot/rental-data-london2")
 
 
 def set_pandas_llm():
@@ -184,18 +184,19 @@ def contextualize_query(query: str, history: Union[deque, list]) -> str:
 
     # Prompt for the LLM
     code_prompt = f"""
-You are a query rewriter for a London real estate chatbot.
-Rewrite the latest user request into a complete standalone query
-that makes sense without the conversation history.
+    You are a query rewriter for a London real estate chatbot focused on rental properties.
+    Rewrite the latest user request into a complete, standalone query
+    that makes sense without relying on the conversation history.
+    Always phrase the query in terms of renting property in London.
 
-Conversation so far:
-{history_text}
+    Conversation so far:
+    {history_text}
 
-Latest user query:
-{query}
+    Latest user query:
+    {query}
 
-Rewritten standalone query:
-"""
+    Rewritten standalone rental query:
+    """
     official_ai = get_openai_llm()
     # Call LLM
     response = official_ai.chat.completions.create(
