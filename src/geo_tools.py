@@ -34,6 +34,7 @@ def generate_google_maps_html(input_data, api_key=os.getenv("GOOGLE_API_KEY")):
 
     # Convert input data into a DataFrame
     locations = pd.DataFrame(input_data)
+    print(type(input_data))
     # Case 1: no rows at all
     if locations.empty:
         return "<html><body><h1>No locations provided</h1></body></html>"
