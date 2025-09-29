@@ -1,6 +1,6 @@
 # --- Core ---
 streamlit==1.45.1
-pandas==2.3.2
+pandas==1.5.3
 numpy==2.3.3        # keep higher for Py 3.13 compatibility
 tqdm==4.67.1
 
