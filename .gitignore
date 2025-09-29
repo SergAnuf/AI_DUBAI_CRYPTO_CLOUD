@@ -13,3 +13,6 @@ chatbot.egg-info
 datasets 
 .vscode
 .idea
+.streamlit
+notebooks
+models
