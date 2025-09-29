@@ -20,12 +20,14 @@ from prompts.tool_description import DESCRIPTION_GET_USER_DATA_REQUIREMENTS, \
     DESCRIPTION_GET_DATA, \
     DESCRIPTON_GENERATE_PLOT_CODE
 
-load_dotenv()
+import streamlit as st
 
+# Load environment variables from streamlit secrets
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 
 @cache_resource
 def get_openai_llm():
-    return openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    return openai.OpenAI(api_key=OPENAI_API_KEY)
 
 
 @cache_resource
@@ -35,7 +37,7 @@ def load_pandas_ai_dataframe():
 
 
 def set_pandas_llm():
-    llm = OpenAI(api_token=os.getenv("OPENAI_API_KEY"), model="gpt-4", temperature=0)
+    llm = OpenAI(api_token=OPENAI_API_KEY, model="gpt-4", temperature=0)
     pai.config.set({"llm": llm})
 
 
