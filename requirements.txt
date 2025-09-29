@@ -1,25 +1,25 @@
-# Core
+# --- Core ---
 streamlit==1.45.1
 pandas==2.3.2
-numpy
-scikit-learn==1.7.2
-matplotlib==3.7.5
-seaborn==0.12.2
-plotly==6.1.2
+numpy==2.3.3        # keep higher for Py 3.13 compatibility
+tqdm==4.67.1
 
-# AI / LangChain
+# --- Env ---
+python-dotenv==1.1.0   # you need this, wasn’t installed locally
+
+# --- AI / LLM ---
+openai==1.82.1
+pandasai==3.0.0a11     # closest public release to your local dev build
+pandasai-openai==0.1.5
 langchain==0.3.25
 langchain-community==0.3.24
 langchain-core==0.3.63
 langsmith==0.1.147
-openai==1.82.1
-pandasai==3.0.0a11
 
+# --- Geospatial ---
+geopy==2.4.1
 
-# Cloud/Storage (if you actually use it)
-s3fs==2025.3.0   # pick version matching fsspec>=2025.3
-fsspec==2025.3.0
-
-# Utils
-python-dotenv==1.1.0
+# --- Utils ---
 requests==2.32.3
+pyyaml==6.0.2          # you had imports earlier
+dataclasses-json==0.6.7
