@@ -20,7 +20,6 @@ bleach==6.2.0
 blinker==1.9.0
 botocore==1.24.21
 cachetools==5.5.2
-catboost==1.2.3
 certifi==2025.4.26
 cffi==1.17.1
 charset-normalizer==3.4.2
@@ -100,7 +99,6 @@ nbformat==5.10.4
 nest-asyncio==1.6.0
 notebook==7.4.3
 notebook_shim==0.2.4
-numpy==1.26.4
 openai==1.82.1
 orjson==3.10.18
 overrides==7.7.0
