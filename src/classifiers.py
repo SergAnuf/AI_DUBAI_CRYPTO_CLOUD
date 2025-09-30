@@ -1,10 +1,9 @@
 import openai
-import os
-from dotenv import load_dotenv
 from prompts.classifiers import spam_prompt, task_prompt
 from openai.types.chat import ChatCompletionUserMessageParam
+from dotenv import load_dotenv
+import os
 
-# Load environment variables from a .env file
 load_dotenv()
 
 # Initialize the OpenAI client using the API key from environment variables
