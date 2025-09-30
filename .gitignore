@@ -1,6 +1,4 @@
-.chatbot_env
-chatbot_env2
-.env
+.venv
 .qodo
 __pycache__/
 cache

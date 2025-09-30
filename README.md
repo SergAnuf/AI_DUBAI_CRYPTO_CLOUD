@@ -1,3 +1,16 @@
+---
+title: Chatbot
+emoji: 🤖
+colorFrom: blue
+colorTo: pink
+sdk: streamlit
+sdk_version: "1.38.0"
+app_file: app.py
+pinned: false
+---
+
+
+
 # 🧠 AI_DUBAI_CRYPTO_CLOUD
 
 A Streamlit-based AI project integrating UAE real estate
