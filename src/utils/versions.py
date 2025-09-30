@@ -17,7 +17,9 @@ packages = [
     "geopy",
     "requests",
     "pyyaml",
-    "dataclasses_json"
+    "dataclasses_json",
+    "json",
+    "dotenv"
 ]
 
 for pkg in packages:

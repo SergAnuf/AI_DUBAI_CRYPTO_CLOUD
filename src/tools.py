@@ -20,10 +20,9 @@ from prompts.tool_description import DESCRIPTION_GET_USER_DATA_REQUIREMENTS, \
     DESCRIPTION_GET_DATA, \
     DESCRIPTON_GENERATE_PLOT_CODE
 
-import streamlit as st
-
+load_dotenv()
 # Load environment variables from streamlit secrets
-OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 @cache_resource
 def get_openai_llm():

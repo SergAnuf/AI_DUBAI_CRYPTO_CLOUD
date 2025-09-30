@@ -1,10 +1,13 @@
 import openai
 from prompts.classifiers import spam_prompt, task_prompt
 from openai.types.chat import ChatCompletionUserMessageParam
-import streamlit as st
+from dotenv import load_dotenv
+import os
 
-# Initialize the OpenAI client using the API key from streamlit secrets
-official_ai = openai.OpenAI(api_key= st.secrets["OPENAI_API_KEY"])
+load_dotenv()
+
+# Initialize the OpenAI client using the API key from environment variables
+official_ai = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def is_uae_real_estate_query(query: str) -> bool:

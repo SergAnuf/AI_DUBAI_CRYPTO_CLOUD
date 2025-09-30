@@ -5,7 +5,10 @@ from geopy.exc import GeocoderTimedOut, GeocoderServiceError
 import time
 import ast
 import pandasai as pai
-import streamlit as st
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Initialize tqdm for pandas to enable progress bars for DataFrame operations
 tqdm.pandas()
@@ -14,7 +17,7 @@ tqdm.pandas()
 df_ai = pai.load("new-bot/rental-data-london2")
 
 
-def generate_google_maps_html(input_data, api_key=st.secrets["GOOGLE_API_KEY"]):
+def generate_google_maps_html(input_data, api_key=os.getenv("GOOGLE_API_KEY")):
     """
     #     Generates an HTML page with a Google Maps visualization of the provided locations.
     #
