@@ -1,55 +1,137 @@
 import streamlit as st
-from src.agent import main_agent
 import streamlit.components.v1 as components
+import pandas as pd
+from collections import deque
 
-# Set the page configuration for the Streamlit app
-st.set_page_config(page_title="UAE Real Estate Chat", layout="wide")
+from src.agent import main_agent
+from src.tools import contextualize_query
 
-# UI Elements
-# Display the main title of the application
-st.markdown("<h1 style='font-size: 70px;'>🏠 UAE Real Estate Chat Assistant</h1>", unsafe_allow_html=True)
-# Display a subtitle describing the purpose of the application
-st.markdown("<p style='font-size: 50px;'>Ask questions about the UAE real estate market data</p>", unsafe_allow_html=True)
 
-# Query input
-# Display a label for the query input field
+# -------------------
+# Streamlit Page Setup
+# -------------------
+st.set_page_config(page_title="London Real Estate Chat", layout="wide")
+
+st.markdown("<h1 style='font-size: 70px;'>🏠 London Real Estate Chat Assistant</h1>", unsafe_allow_html=True)
+st.markdown("<p style='font-size: 50px;'>Ask questions about the London real estate market data</p>", unsafe_allow_html=True)
 st.markdown("<label style='font-size:30px;'>Enter your real estate query:</label>", unsafe_allow_html=True)
 
-# Text input field for the user to enter their query
-# The label is empty because a custom label is styled above
-query = st.text_input(label="", key="real_estate_query")
 
-# Check if the user has entered a query
+# -------------------
+# Session State Setup
+# -------------------
+if "messages" not in st.session_state:
+    st.session_state.messages = deque(maxlen=12)
+
+# -------------------
+# Show Conversation History
+# -------------------
+# Show conversation history
+for i, msg in enumerate(st.session_state.messages):
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
+
+        # Only add thumbs to assistant messages
+        if msg["role"] == "assistant":
+            col1, col2, _ = st.columns([0.1, 0.1, 0.8])  # two small cols, one spacer
+            with col1:
+                st.button("👍", key=f"up_{i}")
+            with col2:
+                st.button("👎", key=f"down_{i}")
+
+
+# Clear conversation
+if st.button("🔄 Restart Conversation"):
+    st.session_state.messages.clear()
+    st.rerun()  # refresh the app
+
+# -------------------
+# User Input
+# -------------------
+query = st.text_input(
+    label="Real Estate Query",
+    key="real_estate_query",
+    label_visibility="collapsed"  # keeps accessibility warnings away
+)
+
+# -------------------
+# Query Handling
+# -------------------
 if query:
-    # Display a spinner while processing the query
+    # Save user message
+    st.session_state.messages.append({"role": "user", "content": query})
+
+    # Contextualize query (LLM could expand later)
+    final_query = contextualize_query(query, history=st.session_state.messages)
+    st.caption(f"Contextualized query → {final_query}")
+
     with st.spinner("Processing your query..."):
-        # Call the main_agent function to process the query
-        result = main_agent(query)
+        result = main_agent(final_query)
 
-    # Handle different types of results returned by main_agent
-    if result.get("error"):
-        # Display an error message if an error occurred
+    # Unified handling by result type
+    result_type = result.get("type")
+
+    if result_type == "error":
         st.error(result["error"])
+        st.session_state.messages.append(
+            {"role": "assistant", "content": result["error"]}
+        )
 
-    elif result["type"] == "output":
-        # Display informational text if the result is of type "output"
-        st.info(result["data"])
+    elif result_type == "message":
+        st.info(result["message"])
+        st.session_state.messages.append(
+            {"role": "assistant", "content": result["message"]}
+        )
 
-    elif result["type"] == "data":
-        # Display a success message and render the data as a table
+    elif result_type == "data":
         st.success("Here is the data related to your query:")
         st.dataframe(result["data"])
 
-    elif result["type"] == "plot":
-        # Execute and render the plot code if the result is of type "plot"
-        plot_code = result.get("result")
-        exec(plot_code)
+        # Add a short sample for history
+        df = pd.DataFrame(result["data"])
+        df_sample = df.head(3).to_markdown(index=False)
+        st.session_state.messages.append(
+            {"role": "assistant", "content": f"Returned data sample:\n\n{df_sample}"}
+        )
 
-    elif result["type"] == "html":
-        # Render HTML content if the result is of type "html"
-        html_code = result.get("content")
-        components.html(html_code, height=600)
+    elif result_type == "plot":
+        plot_code = result.get("result")
+        df = pd.DataFrame(result.get("data"))
+        exec_globals = {"pd": pd, "px": __import__("plotly.express"), "st": st, "df": df}
+
+        try:
+            exec(plot_code, exec_globals)
+            df_sample = df.head(3).to_markdown(index=False)
+            st.session_state.messages.append(
+                {
+                    "role": "assistant",
+                    "content": (
+                        f"Generated plot with code:\n```python\n{plot_code}\n```\n"
+                        f"Data sample used:\n\n{df_sample}"
+                    ),
+                }
+            )
+        except Exception as e:
+            st.error(f"Plot generation failed: {e}")
+            st.session_state.messages.append(
+                {"role": "assistant", "content": f"Plot generation failed: {e}"}
+            )
+
+    elif result_type == "html":
+        try:
+            html_code = result.get("content")
+            components.html(html_code, height=600)
+            st.session_state.messages.append(
+                {"role": "assistant", "content": "Showed properties on Google Maps"}
+            )
+        except Exception:
+            st.error("Failed to display properties on Google Maps.")
+            st.session_state.messages.append(
+                {"role": "assistant", "content": "Failed to display properties on Google Maps"}
+            )
 
     else:
-        # Display a warning if the result type is unexpected
         st.warning("Unexpected result type received.")
+        st.session_state.messages.append(
+            {"role": "assistant", "content": "Unexpected result type received."}
+        )

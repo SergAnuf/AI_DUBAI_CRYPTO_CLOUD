@@ -1,7 +1,8 @@
 # Standard libraries
 import os
 import json
-from typing import Optional
+from collections import deque
+from typing import Optional, Union
 from dotenv import load_dotenv
 
 # Third-party libraries
@@ -20,21 +21,22 @@ from prompts.tool_description import DESCRIPTION_GET_USER_DATA_REQUIREMENTS, \
     DESCRIPTON_GENERATE_PLOT_CODE
 
 load_dotenv()
-
+# Load environment variables from streamlit secrets
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 @cache_resource
 def get_openai_llm():
-    return openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    return openai.OpenAI(api_key=OPENAI_API_KEY)
 
 
 @cache_resource
 def load_pandas_ai_dataframe():
     """Load the real estate dataset from created Pandas AI directory."""
-    return pai.load("my-org/clean2")
+    return pai.load("new-bot/rental-data-london2")
 
 
 def set_pandas_llm():
-    llm = OpenAI(api_token=os.getenv("OPENAI_API_KEY"), model="gpt-4")
+    llm = OpenAI(api_token=OPENAI_API_KEY, model="gpt-4", temperature=0)
     pai.config.set({"llm": llm})
 
 
@@ -74,7 +76,7 @@ def extract_data_intent(user_query: str) -> str:
 @tool(description=DESCRIPTION_GET_DATA)
 def safe_dataframe_tool(query: str) -> str:
     """
-    Executes a natural language query on the UAE real estate dataset.
+    Executes a natural language query on the London real estate dataset.
     Returns a standardized JSON-formatted string.
     """
     try:
@@ -148,13 +150,12 @@ def create_plotly_code(input_json: str):
                                              content="You create Plotly code based on user_input and data"),
             ChatCompletionUserMessageParam(role="user", content=code_prompt)
         ],
+        temperature=0,
         max_tokens=400
     )
     # Extract code
     raw_response = response.choices[0].message.content
-    print("raw_response:", raw_response)
     code = extract_python_code(raw_response)
-    print("code:", code)
     # Modify code for Streamlit
     code = code.replace("fig.show()", "")
     code += "\nst.plotly_chart(fig, use_container_width=True)"
@@ -163,3 +164,54 @@ def create_plotly_code(input_json: str):
         success=True,
         result=code
     )
+
+
+def contextualize_query(query: str, history: Union[deque, list]) -> str:
+    """
+    Rewrite the new user query into a standalone natural-language question
+    using the conversation history (deque).
+    If no history exists, return the query unchanged.
+    """
+
+    # No history → nothing to contextualize
+    if len(history) < 2:
+        return query
+
+    # Build conversation text from full history
+    history_text = ""
+    for msg in history:
+        role = "User" if msg["role"] == "user" else "Assistant"
+        history_text += f"{role}: {msg['content']}\n"
+
+    # Prompt for the LLM
+    code_prompt = f"""
+    You are a query rewriter for a London real estate chatbot focused on rental properties.
+    Rewrite the latest user request into a complete, standalone query
+    that makes sense without relying on the conversation history.
+    Always phrase the query in terms of renting property in London.
+
+    Conversation so far:
+    {history_text}
+
+    Latest user query:
+    {query}
+
+    Rewritten standalone rental query:
+    """
+    official_ai = get_openai_llm()
+    # Call LLM
+    response = official_ai.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=[
+            ChatCompletionSystemMessageParam(
+                role="system",
+                content="You rewrite follow-up queries into standalone natural-language queries for PandasAI."
+            ),
+            ChatCompletionUserMessageParam(role="user", content=code_prompt)
+        ],
+        temperature=0,
+        max_tokens=500
+    )
+
+    rewritten = response.choices[0].message.content.strip()
+    return rewritten or query  # fallback if model returns empty

@@ -1,6 +1,6 @@
 def spam_prompt(query: str) -> str:
     return f"""
-You are a classifier that decides whether a query is about real estate in the UAE (e.g., Dubai, Abu Dhabi).
+You are a classifier that decides whether a query is about real estate in London, UK or not.
 
 Return ONLY "yes" or "no".
 
@@ -9,12 +9,10 @@ Query: "{query}"
 Your answer:
 """
 
-    # defines what user wants to do with query
-
 
 def task_prompt(query: str) -> str:
-    return f'''
-You are a classifier that decides how to handle user queries about UAE real estate data.
+    return f"""
+You are a classifier that decides how to handle user queries about London real estate data.
 
 Classify the query into **one of exactly three categories**:
 
@@ -27,9 +25,9 @@ Use this if the user wants:
 **No visualizations should be involved.**
 
 **Examples:**  
-- "List all apartments in Downtown"  
-- "What is the average rent in Marina?"  
-- "How many listings are available in Abu Dhabi?"
+- "List all apartments in Kensington"  
+- "What is the average rent in Hackney?"  
+- "How many listings are available in Zone 2?"
 
 ---
 
@@ -43,9 +41,9 @@ Use this only if the user wants a **visual statistical plot**, such as:
 This includes visual **comparisons**, **distributions**, or **trends**.
 
 **Examples:**  
-- "Plot a histogram of apartment prices"  
-- "Compare visually prices for 2BR vs 3BR"  
-- "Show a bar chart of number of listings per city"
+- "Plot a histogram of flat prices in London"  
+- "Compare visually prices for 2BR vs 3BR in Camden"  
+- "Show a bar chart of number of listings per borough"
 
 ---
 
@@ -56,13 +54,13 @@ Use this only if the user explicitly wants a **map** or refers to **spatial layo
 - Coordinates or regions visualized on a map
 
 **Examples:**  
-- "Map properties near Dubai Mall"  
-- "Visualize all listings on a map"  
-- "Compare prices north and south of the Dubai Marina"
+- "Map properties near Hyde Park"  
+- "Visualize all listings on a London map"  
+- "Compare prices north and south of the Thames"
 
 ---
 
 Query: "{query}"
 
 Your answer (return ONLY one of: "output", "plot_stats", "geospatial_plot"):
-'''
+"""
