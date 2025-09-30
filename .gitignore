@@ -10,7 +10,6 @@ exports
 .pytest_cache
 chatbot.egg-info
 .testmondata
-datasets 
 .vscode
 .idea
 .streamlit/secrets.toml
