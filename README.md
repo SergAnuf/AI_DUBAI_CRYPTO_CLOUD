@@ -13,7 +13,7 @@ pinned: false
 
 # 🧠 AI_DUBAI_CRYPTO_CLOUD
 
-A Streamlit-based AI project integrating UAE real estate
+A Streamlit-based GenAI/AGI and AI project integrating London real estate real estate data with advanced AI tools for data analysis, visualization, and geospatial mapping.
 
 ---
 
@@ -39,25 +39,4 @@ User Query
    - if "plot_stats" → call visualize_tool
    - if "geospatial_plot" → generate Google Maps HTML 
 
-
-
-
-## 📁 Project Structure
-```md
-├── app.py # Main Streamlit app
-├── data # Local data
-│ ├── dubai.geojson
-│ └── uae_real_estate_2024.csv
-├── exports # Plot files
-│ └── charts
-│ └── temp_chart.png
-├── notebooks # Jupyter notebooks for prototyping
-│ ├── agent_with_tools.ipynb
-│ └── EDA.ipynb
-├── requirements.txt # Python dependencies
-├── README.md # Project description
-└── src # Source code
-├── classifiers.py # Classification routing models
-├── process_data.py # Data processing utilities
-└── tools.py # LangChain tools
 ```
