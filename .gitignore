@@ -15,4 +15,3 @@ datasets
 .idea
 .streamlit/secrets.toml
 notebooks
-models
