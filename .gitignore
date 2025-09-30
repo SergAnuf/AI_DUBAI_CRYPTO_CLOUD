@@ -13,4 +13,4 @@ chatbot.egg-info
 .vscode
 .idea
 .streamlit/secrets.toml
-notebooks
+notebooksmodels/catboost_model_v1.cbm
