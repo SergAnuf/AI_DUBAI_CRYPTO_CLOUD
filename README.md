@@ -31,7 +31,8 @@ A Streamlit-based AI project integrating London real estate data with advanced A
   - `geo_tools.py` – Utilities to map properties on Google Maps, works as long as properties have ids 
 - `prompts/`
    - `classifiers.py` - Prompts for relevance and goal classification
-   - `tool_prompts.py` - Prompts for data extraction and visualization tools
+   - `tool_prompts.py` - Prompts for data extraction and visualization tools. 
+   Includes "format_query_with_table_output(query) -> query" function that augments pandas ai query with table output request
    - `tool_description.py`- Descriptions for each tool used by the agent (not used now)
 - `notebooks/`
   - `upload_london_data.ipynb` - Notebook used to upload London properties data to PandasAI
