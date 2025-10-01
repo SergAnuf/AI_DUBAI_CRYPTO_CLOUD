@@ -10,37 +10,14 @@ pinned: false
 ---
 
 
-
 # 🧠 AI_DUBAI_CRYPTO_CLOUD
 
 A Streamlit-based AI project integrating London real estate data with advanced AI tools for data analysis, visualization, and geospatial mapping.
 
 ---
 
-## Chatbot logic 
 
-```md
-User Query
-   ↓
-[1] Relevance Check (is_uae_real_estate_query)
-   → If irrelevant → "This is an irrelevant question to UAE property."
-   ↓
-[2] Data Intent Extraction (extract_data_intent)
-   → e.g., "monthly count of properties added in Dubai"
-   ↓
-[3] Data Processing (safe_dataframe_tool using PandasAI)
-   → Uses the data intent string to build a pandas-safe query
-   ↓
-[4] User Goal Classification (llm_classifier)
-   → e.g., "output", "plot_stats", or "geospatial_plot"
-   ↓
-[5] Execute Action
-   - if "output" → return raw data
-   - if "plot_stats" → call visualize_tool
-   - if "geospatial_plot" → generate Google Maps HTML 
-
-```
-### Project Structure
+### Project Structure:
 
 - `app.py` – Main Streamlit app, run by Dockerfile
 - `datasets/new-bot/rental-data-london2/`
@@ -53,16 +30,47 @@ User Query
   -      data extraction, plotly code generation, contextualize_query function(query, history) -> new_query
   - `geo_tools.py` – Utilities to map properties on Google Maps, works as long as properties have ids 
 - `prompts/`
-   - 'c'
-- pandasai.log – Log file for PandasAI operations
+   - `classifiers.py` - Prompts for relevance and goal classification
+   - `tool_prompts.py` - Prompts for data extraction and visualization tools
+   - `tool_description.py`- Descriptions for each tool used by the agent (not used now)
+- pandasai.log – Log file for PandasAI operations, can be cleared by bash command " > pandasai.log "  
 - `tests/` - tests folder, in progress
 
-
-- Dockerfile – Containerization for HuggingSpace deployment
-- clear_streamlit_cache.sh – Script to clear Streamlit cache
+### Scripts:
+- clear_streamlit_cache.sh – Script to clear Streamlit cache (rarely needed)
 - run_tests.sh - Script to run unit tests (pytest), in progress.
 
-### Requirements
+### Requirements:
 - Python 3.10  
-- `requirements.txt`
+- `requirements.txt`  – Python dependencies
+- Dockerfile – Containerization for HuggingSpace deployment
+
+
+## ChatBot logic 
+
+```md
+User Query
+   ↓
+[1] Relevance Check (is_uae_real_estate_query)
+   → If irrelevant → "This is an irrelevant question to London property."
+   ↓ pass User Query
+[2] Data Processing (safe_dataframe_tool using PandasAI)
+   → If error → "Returns error message"
+   ↓ Uses the User Query and returns a DataFrame or relevant data
+[3] User Goal Classification (llm_classifier)
+   → e.g., "output", "plot_stats", or "geospatial_plot"
+   ↓
+[4] Execute Action
+   - if "output" → return raw data
+   - if "plot_stats" → call visualize_tool 
+   - if "geospatial_plot" → generate Google Maps HTML 
+
+
+Conversation is maintained by:
+
+a. Logs history at step [4] as list of (User Query, step 4 output, errors) -> history
+b. Creates new query with context: contextualize_query(query, history) -> new_query
+c. Passes new_query to step [1]. 
+d. Loop continues until user stops.
+```
 
