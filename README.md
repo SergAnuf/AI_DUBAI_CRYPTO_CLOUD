@@ -33,6 +33,8 @@ A Streamlit-based AI project integrating London real estate data with advanced A
    - `classifiers.py` - Prompts for relevance and goal classification
    - `tool_prompts.py` - Prompts for data extraction and visualization tools
    - `tool_description.py`- Descriptions for each tool used by the agent (not used now)
+- `notebooks/`
+  - `upload_london_data.ipynb` - Notebook used to upload London properties data to PandasAI
 - pandasai.log – Log file for PandasAI operations, can be cleared by bash command " > pandasai.log "  
 - `tests/` - tests folder, in progress
 
