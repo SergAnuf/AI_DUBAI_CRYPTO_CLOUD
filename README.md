@@ -13,7 +13,7 @@ pinned: false
 
 # 🧠 AI_DUBAI_CRYPTO_CLOUD
 
-A Streamlit-based GenAI/AGI and AI project integrating London real estate real estate data with advanced AI tools for data analysis, visualization, and geospatial mapping.
+A Streamlit-based AI project integrating London real estate data with advanced AI tools for data analysis, visualization, and geospatial mapping.
 
 ---
 
@@ -40,3 +40,29 @@ User Query
    - if "geospatial_plot" → generate Google Maps HTML 
 
 ```
+### Project Structure
+
+- `app.py` – Main Streamlit app, run by Dockerfile
+- `datasets/new-bot/rental-data-london2/`
+  - `data.parquet` – Primary scrapped properties dataset
+  - `schema.yaml` – Schema for PandasAI, helps with LLM data understanding 
+- `src/`
+  - `agent.py` – Core ChatBot logic
+  - `classifiers.py` – Includes functions for relevance checking and goal classification
+  - `tools.py` – LLM tools include: 
+  -      data extraction, plotly code generation, contextualize_query function(query, history) -> new_query
+  - `geo_tools.py` – Utilities to map properties on Google Maps, works as long as properties have ids 
+- `prompts/`
+   - 'c'
+- pandasai.log – Log file for PandasAI operations
+- `tests/` - tests folder, in progress
+
+
+- Dockerfile – Containerization for HuggingSpace deployment
+- clear_streamlit_cache.sh – Script to clear Streamlit cache
+- run_tests.sh - Script to run unit tests (pytest), in progress.
+
+### Requirements
+- Python 3.10  
+- `requirements.txt`
+
