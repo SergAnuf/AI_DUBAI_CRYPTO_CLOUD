@@ -1,4 +1,0 @@
-tests/test_agent.py::test_main_agent[line_1] | "Just checking if this runs" :: PASS
-tests/test_agent.py::test_main_agent[line_2] | "Show average price in Dubai Marina" :: PASS
-tests/test_agent.py::test_main_agent[line_3] | "Compare prices in Dubai Marina vs Downtown" :: PASS
-tests/test_agent.py::test_main_agent[line_4] | "List luxury villas in Palm Jumeirah" :: PASS

@@ -22,11 +22,11 @@ def main_agent(query: str):
         return {"type": "message",
                 "message": "This is an irrelevant question to London property."}
 
-    # Step 2: Extract data intent
+    # Step 2: Extract data intent (now switched off for simplicity)
     data_intent = query
     # data_intent = extract_data_intent.invoke(query)
 
-    # Step 3: Fetch data
+    # Step 3: Fetch data by Pandas AI
     data_json_str = safe_dataframe_tool.invoke(data_intent)
     data_dict = json.loads(data_json_str)
 
@@ -49,7 +49,7 @@ def main_agent(query: str):
         return {"type": "message",
                 "message": "No properties found. Please refine your search."}
 
-    # Step 5: Classify the user’s goal
+    # Step 5: Classify the user’s goal based on the query. Options: output, plot_stats, geospatial_plot
     action = llm_classifier(query)
 
     # Step 6: Execute action
