@@ -32,7 +32,7 @@ def get_openai_llm():
 @cache_resource
 def load_pandas_ai_dataframe():
     """Load the real estate dataset from created Pandas AI directory."""
-    return pai.load("new-bot/rental-data-london2")
+    return pai.load(os.getenv("DATAFRAME"))
 
 
 def set_pandas_llm():
