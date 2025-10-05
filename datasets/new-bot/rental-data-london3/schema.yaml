@@ -1,0 +1,136 @@
+name: rental_data_london3
+source:
+  type: parquet
+  path: data.parquet
+description: London real estate property listings with pricing, size, location, station
+  proximity, and noise levels
+columns:
+- name: id
+  type: string
+  description: Unique identifier for each property listing
+- name: title
+  type: string
+  description: Listing title
+- name: display_address
+  type: string
+  description: Readable address of the property
+- name: postcode_outcode
+  type: string
+  description: Outcode part of the UK postcode
+- name: postcode_incode
+  type: string
+  description: Incode part of the UK postcode
+- name: bathrooms
+  type: integer
+  description: Number of bathrooms
+- name: bedrooms
+  type: integer
+  description: Number of bedrooms
+- name: property_type
+  type: string
+  description: Type of property (flat, apartment, house, etc.)
+- name: price_gbp
+  type: float
+  description: Listed price in GBP
+- name: secondary_price_gbp
+  type: float
+  description: Secondary listing price (e.g. weekly rent) in GBP
+- name: deposit_included_or_not
+  type: string
+  description: 'Deposit included or (e.g '
+- name: let_type
+  type: string
+  description: Letting type (short term, long term)
+- name: furnish_type
+  type: string
+  description: Furnishing type (furnished, unfurnished, part furnished)
+- name: council_tax_exempt
+  type: boolean
+  description: Whether council tax is exempt
+- name: council_tax_included
+  type: boolean
+  description: Whether council tax is included in rent
+- name: council_tax_band
+  type: string
+  description: Council tax band classification
+- name: property_features
+  type: string
+  description: Key features of the property stored as a JSON-style list of strings
+    (e.g. ["Balcony", "Parking", "Gym"]). Each entry represents an amenity or characteristic
+    such as balcony, garden, concierge, parking, or EPC rating.
+- name: listing_update_reason
+  type: string
+  description: Reason for most recent listing update
+- name: listing_update_date
+  type: datetime
+  description: Date of the most recent listing update, formatted as YYYY-MM-DD (year-month-day).
+- name: added_on
+  type: datetime
+  description: Date the property was added to the platform, formatted as YYYY-MM-DD
+    (year-month-day).
+- name: size_sqft_min
+  type: float
+  description: Minimum property size in square feet
+- name: size_sqft_max
+  type: float
+  description: Maximum property size in square feet
+- name: latitude
+  type: float
+  description: Latitude of the property
+- name: longitude
+  type: float
+  description: Longitude of the property
+- name: nearest_station1_name
+  type: string
+  description: Name of the nearest station
+- name: nearest_station2_name
+  type: string
+  description: Name of the second nearest station
+- name: nearest_station3_name
+  type: string
+  description: Name of the third nearest station
+- name: nearest_station1_distance_km
+  type: float
+  description: Distance to nearest station in km
+- name: nearest_station2_distance_km
+  type: float
+  description: Distance to second nearest station in km
+- name: nearest_station3_distance_km
+  type: float
+  description: Distance to third nearest station in km
+- name: nearest_station1_type
+  type: string
+  description: Type of nearest station (tube, national train, DLR, etc.)
+- name: nearest_station2_type
+  type: string
+  description: Type of second nearest station
+- name: nearest_station3_type
+  type: string
+  description: Type of third nearest station
+- name: borough
+  type: string
+  description: London borough of the property
+- name: travel_zone
+  type: string
+  description: London Travelcard zone
+- name: distance_to_center_km
+  type: float
+  description: Distance from property to central London (Charing Cross)
+- name: noise_level_class
+  type: string
+  description: Noise classification (low, medium, high, no_data)
+- name: description
+  type: string
+  description: Cleaned free-text property description
+- name: predicted_price
+  type: float
+  description: Expected price in GBP predicted by a regression model using property
+    features. Serves as a benchmark to compare against the actual listed price.
+- name: pricing_index
+  type: float
+  description: If less than 1, the property is good value. If greater than 1, it is
+    poor value.
+- name: district
+  type: string
+  description: Neighbourhood or district within London where the property is located
+    (e.g. Canary Wharf, Shoreditch).

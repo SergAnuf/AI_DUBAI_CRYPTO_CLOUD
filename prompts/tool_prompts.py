@@ -2,7 +2,7 @@ import pandas as pd
 from src.utils.env_tools import cache_resource
 import yaml
 
-with open("datasets/new-bot/rental-data-london2/schema.yaml", "r") as f:
+with open("datasets/new-bot/rental-data-london3/schema.yaml", "r") as f:
     SCHEMA_YAML_CONTENT = yaml.safe_load(f)
 
 

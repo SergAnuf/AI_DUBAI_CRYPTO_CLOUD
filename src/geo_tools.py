@@ -14,7 +14,7 @@ load_dotenv()
 tqdm.pandas()
 
 # Load PandasAI dataset once at module level
-df_ai = pai.load("new-bot/rental-data-london2")
+df_ai = pai.load(os.getenv("DATAFRAME"))
 
 
 def generate_google_maps_html(input_data, api_key=os.getenv("GOOGLE_API_KEY")):
