@@ -1,4 +1,4 @@
-name: rental_data_london4
+name: rental_data_london3
 source:
   type: parquet
   path: data.parquet
