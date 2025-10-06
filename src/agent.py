@@ -4,6 +4,10 @@ from src.geo_tools import generate_google_maps_html
 import json
 
 
+def safe_user_query(q: str) -> str:
+    return q.replace("'", "`").replace("’", "`").replace("‘", "`")
+
+
 def main_agent(query: str):
     """
     Processes a user query related to London real estate and returns a structured response.
@@ -23,7 +27,7 @@ def main_agent(query: str):
                 "message": "This is an irrelevant question to London property."}
 
     # Step 2: Extract data intent (now switched off for simplicity)
-    data_intent = query
+    data_intent = safe_user_query(query)
     # data_intent = extract_data_intent.invoke(query)
 
     # Step 3: Fetch data by Pandas AI

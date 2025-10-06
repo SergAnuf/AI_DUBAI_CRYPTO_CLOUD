@@ -10,7 +10,7 @@ def format_query_with_table_output(original_query: str) -> str:
     table_format_instruction = """
 Output format requirement:
 - Present all results strictly as a table (rows and columns).
-- Do not return plain text, bullet points, or prose.
+- Do not return pictures, charts or maps
 - If there is only one value, still return it as a one-row, one-column table.
 - Use clear column headers.
 - If properties returned always include: id column.
