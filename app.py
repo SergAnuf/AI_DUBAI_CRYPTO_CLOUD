@@ -12,7 +12,6 @@ from src.tools import contextualize_query
 st.set_page_config(page_title="London Real Estate Chat", layout="wide")
 
 st.markdown("<h1 style='font-size: 70px;'>🏠 London Real Estate Chat Assistant</h1>", unsafe_allow_html=True)
-st.markdown("<p style='font-size: 50px;'>Ask questions about the London real estate market data</p>", unsafe_allow_html=True)
 
 # -------------------
 # Session State Setup
@@ -38,13 +37,6 @@ for i, msg in enumerate(st.session_state.messages):
                 st.button("👍", key=f"up_{i}")
             with col2:
                 st.button("👎", key=f"down_{i}")
-
-# -------------------
-# Conversation Reset
-# -------------------
-if st.button("🔄 Restart Conversation"):
-    st.session_state.messages.clear()
-    st.rerun()  # refresh the app
 
 # -------------------
 # User Input
@@ -160,3 +152,8 @@ if query:
         st.session_state.messages.append(
             {"role": "assistant", "content": "⚠️ Unexpected result type received."}
         )
+
+# reset button
+if st.button("🔄 Restart Conversation"):
+    st.session_state.messages.clear()
+    st.rerun()  # refresh the app
