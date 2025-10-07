@@ -11,7 +11,7 @@ from src.tools import contextualize_query
 # -------------------
 st.set_page_config(page_title="London Real Estate Chat", layout="wide")
 
-st.markdown("<h1 style='font-size: 70px;'>🏠 London Real Estate Chat Assistant</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='font-size: 40px;'>🏠 London Real Estate Chat Assistant</h1>", unsafe_allow_html=True)
 
 # -------------------
 # Session State Setup
@@ -22,6 +22,16 @@ if "messages" not in st.session_state:
 # -------------------
 # Show Conversation History
 # -------------------
+
+def render_thumbs(i):
+    col1, col2, _ = st.columns([0.1, 0.1, 0.8])
+    with col1:
+        if st.button("👍", key=f"up_{i}"):
+            st.toast("Thanks for your feedback 👍")
+    with col2:
+        if st.button("👎", key=f"down_{i}"):
+            st.toast("Got it — we’ll improve 👎")
+
 for i, msg in enumerate(st.session_state.messages):
     with st.chat_message(msg["role"]):
         # If the message includes a saved dataframe, render it directly
@@ -32,11 +42,46 @@ for i, msg in enumerate(st.session_state.messages):
 
         # Only add thumbs to assistant messages
         if msg["role"] == "assistant":
-            col1, col2, _ = st.columns([0.1, 0.1, 0.8])  # two small cols, one spacer
-            with col1:
-                st.button("👍", key=f"up_{i}")
-            with col2:
-                st.button("👎", key=f"down_{i}")
+            render_thumbs(i)
+
+if len(st.session_state.messages) == 0:
+    st.markdown(
+        """
+        <div style='text-align: center; padding: 8px 0;'>
+            <h3>💬 What this chatbot can do</h3>
+            <p style='font-size:20px; color:grey;'>
+                Explore real-time insights from London’s property market:
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    cols = st.columns(3)
+    img_style = {"use_container_width": True}
+
+    with cols[0]:
+        st.markdown(
+            "<p style='text-align:center; font-size:25px; font-weight:500;'>📊 View property/data tables</p>",
+            unsafe_allow_html=True,
+        )
+        st.image("assets/plot_query.png", **img_style)
+
+    with cols[1]:
+        st.markdown(
+            "<p style='text-align:center; font-size:25px; font-weight:500;'>🗺️ Show properties on maps</p>",
+            unsafe_allow_html=True,
+        )
+        st.image("assets/plot_query.png", **img_style)
+
+    with cols[2]:
+        st.markdown(
+            "<p style='text-align:center; font-size:25px; font-weight:500;'>📈 Generate rent analytics plots</p>",
+            unsafe_allow_html=True,
+        )
+        st.image("assets/plot_query.png", **img_style)
+
+    st.markdown("<hr style='margin: 5px 0;'>", unsafe_allow_html=True)
 
 # -------------------
 # User Input
@@ -49,10 +94,8 @@ query = st.chat_input("Ask about London properties...")
 if query:
     with st.chat_message("user"):
         st.markdown(query)
-    # Save user message
     st.session_state.messages.append({"role": "user", "content": query})
 
-    # Contextualize query
     final_query = contextualize_query(query, history=st.session_state.messages)
     st.caption(f"Contextualized query → {final_query}")
 
@@ -127,7 +170,6 @@ if query:
             st.session_state.messages.append(
                 {"role": "assistant", "content": f"Plot generation failed: {e}"}
             )
-
     # -------------
     # HTML result (e.g., map)
     # -------------
@@ -143,7 +185,6 @@ if query:
             st.session_state.messages.append(
                 {"role": "assistant", "content": "❌ Failed to display properties on Google Maps."}
             )
-
     # -------------
     # Unexpected result type
     # -------------
@@ -152,6 +193,8 @@ if query:
         st.session_state.messages.append(
             {"role": "assistant", "content": "⚠️ Unexpected result type received."}
         )
+    # Rerender the last assistant message with thumbs
+    render_thumbs(len(st.session_state.messages) - 1)
 
 # reset button
 if st.button("🔄 Restart Conversation"):
