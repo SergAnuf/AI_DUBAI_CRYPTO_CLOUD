@@ -13,7 +13,6 @@ st.set_page_config(page_title="London Real Estate Chat", layout="wide")
 
 st.markdown("<h1 style='font-size: 70px;'>🏠 London Real Estate Chat Assistant</h1>", unsafe_allow_html=True)
 st.markdown("<p style='font-size: 50px;'>Ask questions about the London real estate market data</p>", unsafe_allow_html=True)
-st.markdown("<label style='font-size:30px;'>Enter your real estate query:</label>", unsafe_allow_html=True)
 
 # -------------------
 # Session State Setup
@@ -56,6 +55,8 @@ query = st.chat_input("Ask about London properties...")
 # Query Handling
 # -------------------
 if query:
+    with st.chat_message("user"):
+        st.markdown(query)
     # Save user message
     st.session_state.messages.append({"role": "user", "content": query})
 
