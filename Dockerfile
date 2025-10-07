@@ -27,6 +27,7 @@ COPY app.py .
 COPY datasets ./datasets
 COPY prompts ./prompts
 COPY src ./src
+COPY assets ./assets
 
 # 9) Streamlit configuration (avoid CORS & telemetry issues)
 ENV STREAMLIT_SERVER_ENABLECORS=false \
