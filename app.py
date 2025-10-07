@@ -50,11 +50,7 @@ if st.button("🔄 Restart Conversation"):
 # -------------------
 # User Input
 # -------------------
-query = st.text_input(
-    label="Real Estate Query",
-    key="real_estate_query",
-    label_visibility="collapsed"
-)
+query = st.chat_input("Ask about London properties...")
 
 # -------------------
 # Query Handling
