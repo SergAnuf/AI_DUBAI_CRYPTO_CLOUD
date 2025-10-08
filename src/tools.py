@@ -74,14 +74,18 @@ def extract_data_intent(user_query: str) -> str:
 
 
 @tool(description=DESCRIPTION_GET_DATA)
-def safe_dataframe_tool(query: str) -> str:
+def safe_dataframe_tool(input_json: str) -> str:
     """
     Executes a natural language query on the London real estate dataset.
     Returns a standardized JSON-formatted string.
     """
     try:
+        input_dict = json.loads(input_json)
+        query = input_dict.get("query", "")
+        action = input_dict.get("action", "")
+
         data = load_pandas_ai_dataframe()
-        result = data.chat(format_query_with_table_output(query)).to_dict()
+        result = data.chat(format_query_with_table_output(query,action)).to_dict()
 
         if result["error"] is None and "value" in result:
             return standard_response(

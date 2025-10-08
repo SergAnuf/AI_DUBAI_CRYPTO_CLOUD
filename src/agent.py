@@ -5,6 +5,15 @@ import json
 
 
 def safe_user_query(q: str) -> str:
+    """
+    Sanitizes a user query by replacing problematic characters with safe alternatives.
+
+    Args:
+        q (str): The user query string.
+
+    Returns:
+        str: The sanitized query string.
+    """
     return q.replace("'", "`").replace("’", "`").replace("‘", "`")
 
 
@@ -12,28 +21,34 @@ def main_agent(query: str):
     """
     Processes a user query related to London real estate and returns a structured response.
 
+    Args:
+        query (str): The user query string.
+
     Returns:
-        dict: with keys depending on type:
+        dict: A structured response with one of the following formats:
             - type="message": {"type": "message", "message": str}
             - type="data": {"type": "data", "data": list[dict]}
             - type="plot": {"type": "plot", "result": str, "data": list[dict]}
             - type="html": {"type": "html", "content": str}
             - type="error": {"type": "error", "error": str, "solution": Optional[str]}
     """
-
     # Step 1: Relevance check
+    # Determine if the query is relevant to London real estate.
     if not is_uae_real_estate_query(query):
         return {"type": "message",
                 "message": "This is an irrelevant question to London property."}
 
-    # Step 2: Extract data intent (now switched off for simplicity)
-    data_intent = safe_user_query(query)
-    # data_intent = extract_data_intent.invoke(query)
+    # Step 2: Sanitize the query and classify the user's intent.
+    query = safe_user_query(query)
+    action = llm_classifier(query)
+    final_input = json.dumps({"query": query, "action": action})
 
-    # Step 3: Fetch data by Pandas AI
-    data_json_str = safe_dataframe_tool.invoke(data_intent)
+    # Step 3: Fetch data using a safe dataframe tool.
+    # The tool processes the query and action to return data in JSON format.
+    data_json_str = safe_dataframe_tool.invoke(final_input)
     data_dict = json.loads(data_json_str)
 
+    # Handle errors in the data fetching process.
     if not data_dict.get("success"):
         return {"type": "error",
                 "error": data_dict.get("error"),
@@ -41,7 +56,8 @@ def main_agent(query: str):
 
     results = data_dict.get("result", [])
 
-    # 🔹 Normalize results
+    # Step 4: Normalize results.
+    # Ensure results are in a consistent format for further processing.
     if results is None:
         return {"type": "message",
                 "message": "No properties found. Please refine your search."}
@@ -53,20 +69,20 @@ def main_agent(query: str):
         return {"type": "message",
                 "message": "No properties found. Please refine your search."}
 
-    # Step 5: Classify the user’s goal based on the query. Options: output, plot_stats, geospatial_plot
-    action = llm_classifier(query)
-
-    # Step 6: Execute action
+    # Step 5: Execute the action based on the classified intent.
     if action == "output":
+        # Return the data as-is.
         return {"type": "data", "data": results}
 
     elif action == "plot_stats":
+        # Generate a Plotly visualization based on the results.
         viz_input = json.dumps({"data": results, "query": query})
         result_json_str = create_plotly_code.invoke(viz_input)
         result = json.loads(result_json_str)
         return {"type": "plot", "result": result["result"], "data": results}
 
     elif action == "geospatial_plot":
+        # Generate a geospatial plot using Google Maps if the result set is small.
         if len(results) < 50:
             html = generate_google_maps_html(results)
             return {"type": "html", "content": html}
@@ -75,5 +91,6 @@ def main_agent(query: str):
                     "message": "Too many properties to display. Please refine your search."}
 
     else:
+        # Handle unknown actions.
         return {"type": "error",
                 "error": f"Unknown action '{action}' from classifier."}

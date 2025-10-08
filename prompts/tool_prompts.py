@@ -6,16 +6,28 @@ with open("datasets/new-bot/rental-data-london3/schema.yaml", "r") as f:
     SCHEMA_YAML_CONTENT = yaml.safe_load(f)
 
 
-def format_query_with_table_output(original_query: str) -> str:
-    table_format_instruction = """
-Output format requirement:
-- Present all results strictly as a table (rows and columns).
-- Do not return pictures, charts or maps
-- If there is only one value, still return it as a one-row, one-column table.
-- Use clear column headers.
-- If properties returned always include: id column.
-"""
-    return original_query.strip() + "\n\n" + table_format_instruction
+def format_query_with_table_output(original_query: str, action: str) -> str:
+    # TODO : since we know the type of question asked we can modify the query which is submitted to pandasAI
+
+    table_format_instruction_geo = """
+      Output format requirement:
+      - Present all results strictly as a table (rows and columns).
+      - Do not return pictures, charts or maps
+      - If there is only one value, still return it as a one-row, one-column table.
+      - Use clear column headers.
+      - If properties returned always include: id column."""
+
+    table_format_instruction_other = """
+      Output format requirement:
+      - Present all results strictly as a table (rows and columns).
+      - Do not return pictures, charts or maps
+      - If there is only one value, still return it as a one-row, one-column table.
+      - Use clear column headers."""
+
+    if action == "geospatial_plot":
+        return original_query.strip() + "\n\n" + table_format_instruction_geo
+    else:
+        return original_query.strip() + "\n\n" + table_format_instruction_other
 
 
 
