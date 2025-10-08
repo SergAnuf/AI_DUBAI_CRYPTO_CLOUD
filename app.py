@@ -24,13 +24,21 @@ if "messages" not in st.session_state:
 # -------------------
 
 def render_thumbs(i):
-    col1, col2, _ = st.columns([0.1, 0.1, 0.8])
+    # Use small equal-width columns and center them
+    col1, col2, col3 = st.columns([1, 0.2, 1])
     with col1:
-        if st.button("👍", key=f"up_{i}"):
-            st.toast("Thanks for your feedback 👍")
+        pass  # empty left spacer
     with col2:
-        if st.button("👎", key=f"down_{i}"):
-            st.toast("Got it — we’ll improve 👎")
+        # Inline thumbs up/down buttons with no extra vertical padding
+        c1, c2 = st.columns([1, 1])
+        with c1:
+            if st.button("👍", key=f"up_{i}"):
+                st.toast("Thanks for your feedback 👍")
+        with c2:
+            if st.button("👎", key=f"down_{i}"):
+                st.toast("Got it — we’ll improve 👎")
+    with col3:
+        pass  # empty right spacer
 
 for i, msg in enumerate(st.session_state.messages):
     with st.chat_message(msg["role"]):
@@ -65,21 +73,21 @@ if len(st.session_state.messages) == 0:
             "<p style='text-align:center; font-size:25px; font-weight:500;'>📊 View property/data tables</p>",
             unsafe_allow_html=True,
         )
-        st.image("assets/plot_query.png", **img_style)
+        st.image("assets/pic3.png", **img_style)
 
     with cols[1]:
         st.markdown(
             "<p style='text-align:center; font-size:25px; font-weight:500;'>🗺️ Show properties on maps</p>",
             unsafe_allow_html=True,
         )
-        st.image("assets/plot_query.png", **img_style)
+        st.image("assets/pic1.png", **img_style)
 
     with cols[2]:
         st.markdown(
             "<p style='text-align:center; font-size:25px; font-weight:500;'>📈 Generate rent analytics plots</p>",
             unsafe_allow_html=True,
         )
-        st.image("assets/plot_query.png", **img_style)
+        st.image("assets/pic2.png", **img_style)
 
     st.markdown("<hr style='margin: 5px 0;'>", unsafe_allow_html=True)
 
@@ -97,7 +105,8 @@ if query:
     st.session_state.messages.append({"role": "user", "content": query})
 
     final_query = contextualize_query(query, history=st.session_state.messages)
-    st.caption(f"Contextualized query → {final_query}")
+    # For debugging only
+    # st.caption(f"Contextualized query → {final_query}")
 
     with st.spinner("Processing your query..."):
         result = main_agent(final_query)
