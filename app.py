@@ -24,21 +24,20 @@ if "messages" not in st.session_state:
 # -------------------
 
 def render_thumbs(i):
-    # Use small equal-width columns and center them
+    # Center thumbs and keep them out of chat history
     col1, col2, col3 = st.columns([1, 0.2, 1])
     with col1:
-        pass  # empty left spacer
+        pass  # left spacer
     with col2:
-        # Inline thumbs up/down buttons with no extra vertical padding
         c1, c2 = st.columns([1, 1])
         with c1:
-            if st.button("👍", key=f"up_{i}"):
+            if st.button("👍", key=f"up_{i}", use_container_width=True):
                 st.toast("Thanks for your feedback 👍")
         with c2:
-            if st.button("👎", key=f"down_{i}"):
+            if st.button("👎", key=f"down_{i}", use_container_width=True):
                 st.toast("Got it — we’ll improve 👎")
     with col3:
-        pass  # empty right spacer
+        pass  # right spacer
 
 for i, msg in enumerate(st.session_state.messages):
     with st.chat_message(msg["role"]):
