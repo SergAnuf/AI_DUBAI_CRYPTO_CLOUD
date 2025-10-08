@@ -37,6 +37,5 @@ ENV STREAMLIT_SERVER_ENABLECORS=false \
 # 10) Expose port (Hugging Face Spaces uses 7860)
 EXPOSE 7860
 
-RUN echo "rebuild: $(date)" > /tmp/rebuild.txt
 # 11) Start Streamlit app
 CMD ["streamlit", "run", "app.py", "--server.port=7860", "--server.address=0.0.0.0"]
