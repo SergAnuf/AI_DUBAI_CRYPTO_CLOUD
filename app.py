@@ -52,6 +52,7 @@ for i, msg in enumerate(st.session_state.messages):
             render_thumbs(i)
 
 if len(st.session_state.messages) == 0:
+
     st.markdown(
         """
         <div style='text-align: center; padding: 8px 0;'>
@@ -63,6 +64,17 @@ if len(st.session_state.messages) == 0:
         """,
         unsafe_allow_html=True
     )
+
+    # st.markdown("<hr style='margin: 5px 0;'>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)  # spacing between rows
+    col_center = st.columns([1, 2, 1])[1]  # middle column for centering
+
+    with col_center:
+        st.markdown(
+            "<p style='text-align:center; font-size:25px; font-weight:500;'>🏘️ Estimate property prices by prompting their url</p>",
+            unsafe_allow_html=True,
+        )
+        st.image("assets/ai_price.png", use_container_width=True)
 
     cols = st.columns(3)
     img_style = {"use_container_width": True}
@@ -193,6 +205,15 @@ if query:
             st.session_state.messages.append(
                 {"role": "assistant", "content": "❌ Failed to display properties on Google Maps."}
             )
+    # -------------
+    # Properties valuation results,
+    # These are not added to the chat history
+    # -------------
+    elif result_type == "pricing_data":
+        st.success("Here are your properties valuations:")
+        df = pd.DataFrame(result["data"])
+        st.dataframe(df, use_container_width=True)
+
     # -------------
     # Unexpected result type
     # -------------
