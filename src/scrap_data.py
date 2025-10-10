@@ -123,25 +123,49 @@ async def scrape_properties(urls: List[str]) -> List[Dict[str, Any]]:
 # ---------------------
 # Test run
 # ---------------------
-
+#
+# def run_scraper_safe(urls):
+#     """
+#     Safely run the async scrape_properties() function from both
+#     sync and async environments. Returns scraped data.
+#     """
+#     try:
+#         loop = asyncio.get_running_loop()
+#     except RuntimeError:
+#         loop = None
+#
+#     if loop and loop.is_running():
+#         # Already inside an async loop (e.g. Streamlit or FastAPI)
+#         # -> schedule and await manually
+#         future = asyncio.ensure_future(scrape_properties(urls))
+#         return asyncio.run_coroutine_threadsafe(future, loop).result()
+#     else:
+#         # Normal Python script
+#         return asyncio.run(scrape_properties(urls))
+#
 def run_scraper_safe(urls):
     """
-    Safely run the async scrape_properties() function from both
-    sync and async environments. Returns scraped data.
+    Safely run the async scrape_properties() function on Hugging Face Spaces.
     """
     try:
-        loop = asyncio.get_running_loop()
-    except RuntimeError:
-        loop = None
-
-    if loop and loop.is_running():
-        # Already inside an async loop (e.g. Streamlit or FastAPI)
-        # -> schedule and await manually
-        future = asyncio.ensure_future(scrape_properties(urls))
-        return asyncio.run_coroutine_threadsafe(future, loop).result()
-    else:
-        # Normal Python script
+        # Try the standard approach first
         return asyncio.run(scrape_properties(urls))
+    except RuntimeError as e:
+        if "cannot be called from a running event loop" in str(e):
+            # Handle case where event loop is already running
+            try:
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    # Create new event loop for this operation
+                    import nest_asyncio
+                    nest_asyncio.apply()
+                    return loop.run_until_complete(scrape_properties(urls))
+            except:
+                # Fallback: use a new event loop
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                return loop.run_until_complete(scrape_properties(urls))
+        raise
 
 
 def parse_price_pcm(price_str):
