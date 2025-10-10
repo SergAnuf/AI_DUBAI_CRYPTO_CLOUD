@@ -3,7 +3,6 @@ import json
 import os
 from typing import List, Dict, Any
 import re
-import pandas as pd
 import random
 
 from scrapfly import ScrapflyClient, ScrapeApiResponse, ScrapeConfig
@@ -12,33 +11,23 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Initialize Scrapfly client
-SCRAPFLY_KEY = os.getenv("SCRAPFLY_API_KEY")
-scrapfly = ScrapflyClient(key=SCRAPFLY_KEY)
-
+scrapfly = ScrapflyClient(key=os.getenv("SCRAPFLY_API_KEY"))
 
 
 def detect_rightmove_links(query: str):
-    """
-    Detect any Rightmove property URLs within a text string.
-    Returns a list of cleaned Rightmove URLs if found, otherwise "not_rightmove_links".
-    """
-
+    """ Detect any Rightmove property URLs within a text string. Returns a list of cleaned RightMove URLs if found, otherwise [] """
     # Remove fragments like #/?channel=RES_LET or #... after each URL
     cleaned_query = re.sub(r"#.*?(?=\s|,|$)", "", query.strip())
-
     # Regex to match Rightmove property URLs
     pattern = r"https?://(?:www\.)?rightmove\.co\.uk/properties/\d+"
-
     # Find all URLs in text
     matches = re.findall(pattern, cleaned_query)
-
     if matches:
-        # Deduplicate and return clean list
-        unique_links = list(dict.fromkeys(matches))
-        return unique_links
+       # Deduplicate and return clean list
+       unique_links = list(dict.fromkeys(matches))
+       return unique_links
     else:
-        return []
-
+       return []
 
 # ---------------------
 # JSON extraction utils
@@ -118,7 +107,7 @@ def parse_property(data: Dict[str, Any]) -> Dict[str, Any]:
 # ---------------------
 
 async def scrape_properties(urls: List[str]) -> List[Dict[str, Any]]:
-    """Scrape multiple Rightmove property pages asynchronously."""
+    """Scrape multiple RightMove property pages asynchronously."""
     to_scrape = [
         ScrapeConfig(url=url, asp=True, country="GB", render_js=False)
         for url in urls
@@ -130,7 +119,6 @@ async def scrape_properties(urls: List[str]) -> List[Dict[str, Any]]:
             parsed = parse_property(raw_data)
             results.append(parsed)
     return results
-
 
 # ---------------------
 # Test run
@@ -184,20 +172,17 @@ def to_property_dicts(scraped_data: List[Dict[str, Any]]) -> List[Dict[str, Any]
     for item in scraped_data:
         address = item.get("address", {}).get("displayAddress")
         bedrooms = item.get("bedrooms")
-        bathrooms = item.get("bathrooms")
         price_str = item.get("prices", {}).get("primaryPrice")
         url = item.get("url")
 
         price = parse_price_pcm(price_str)
-        expected_rent = round(price * random.uniform(0.9, 1.1), 1) if price else None
+        expected_rent = round(price * random.uniform(0.85, 1.15), 1) if price else None
 
         properties.append({
-            "displayAddress": address,
-            "bedrooms": bedrooms,
-            "bathrooms": bathrooms,
-            "Rent (£/pcm)": price,
-            "expectedRent (£/pcm)": expected_rent,
-            "url": url
-        })
-
+                "bedrooms": bedrooms,
+                "displayAddress": address,
+                "Rent (£/pcm)": price,
+                "expectedRent (£/pcm)": expected_rent,
+                "url": url
+            })
     return properties

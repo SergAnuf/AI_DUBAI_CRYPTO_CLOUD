@@ -1,6 +1,7 @@
-from src.tools import safe_dataframe_tool, extract_data_intent, create_plotly_code
+from src.tools import safe_dataframe_tool, create_plotly_code
 from src.classifiers import llm_classifier, is_uae_real_estate_query
 from src.geo_tools import generate_google_maps_html
+from src.scrap_data import run_scraper_safe, detect_rightmove_links,to_property_dicts
 import json
 
 
@@ -32,7 +33,19 @@ def main_agent(query: str):
             - type="html": {"type": "html", "content": str}
             - type="error": {"type": "error", "error": str, "solution": Optional[str]}
     """
-    # Step 1: Relevance check
+    # Step 0: If correct RightMoves URLs are provided, trigger the scraper directly.
+    urls  = detect_rightmove_links(query)
+    print("Detected URLs:", len(urls))
+    if len(urls)>0:
+        try:
+            scraped_data = run_scraper_safe(urls)
+            data = to_property_dicts(scraped_data)
+            return {"type": "pricing_data", "data": data}
+        except:
+            return {"type": "message",
+                "message": "The model server is busy right now."}
+
+    # Step 1: Relevance QUERY check if no URLs are provided.
     # Determine if the query is relevant to London real estate.
     if not is_uae_real_estate_query(query):
         return {"type": "message",
