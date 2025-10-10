@@ -2,6 +2,9 @@ import asyncio
 import json
 import os
 from typing import List, Dict, Any
+import re
+import pandas as pd
+import random
 
 from scrapfly import ScrapflyClient, ScrapeApiResponse, ScrapeConfig
 from dotenv import load_dotenv
@@ -12,10 +15,34 @@ load_dotenv()
 SCRAPFLY_KEY = os.getenv("SCRAPFLY_API_KEY")
 scrapfly = ScrapflyClient(key=SCRAPFLY_KEY)
 
+
+
+def detect_rightmove_links(query: str):
+    """
+    Detect any Rightmove property URLs within a text string.
+    Returns a list of cleaned Rightmove URLs if found, otherwise "not_rightmove_links".
+    """
+
+    # Remove fragments like #/?channel=RES_LET or #... after each URL
+    cleaned_query = re.sub(r"#.*?(?=\s|,|$)", "", query.strip())
+
+    # Regex to match Rightmove property URLs
+    pattern = r"https?://(?:www\.)?rightmove\.co\.uk/properties/\d+"
+
+    # Find all URLs in text
+    matches = re.findall(pattern, cleaned_query)
+
+    if matches:
+        # Deduplicate and return clean list
+        unique_links = list(dict.fromkeys(matches))
+        return unique_links
+    else:
+        return []
+
+
 # ---------------------
 # JSON extraction utils
 # ---------------------
-
 def find_json_objects(text: str, decoder=json.JSONDecoder()):
     """Find and yield JSON objects embedded in a text blob."""
     pos = 0
@@ -109,15 +136,68 @@ async def scrape_properties(urls: List[str]) -> List[Dict[str, Any]]:
 # Test run
 # ---------------------
 
-async def run():
-    urls = [
-        "https://www.rightmove.co.uk/properties/164903663#/?channel=RES_LET",
-        "https://www.rightmove.co.uk/properties/167855057#/?channel=RES_LET",
-    ]
-    data = await scrape_properties(urls)
-    print(json.dumps(data, indent=2, ensure_ascii=False))
+def run_scraper_safe(urls):
+    """
+    Safely run the async scrape_properties() function from both
+    sync and async environments. Returns scraped data.
+    """
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = None
+
+    if loop and loop.is_running():
+        # Already inside an async loop (e.g. Streamlit or FastAPI)
+        # -> schedule and await manually
+        future = asyncio.ensure_future(scrape_properties(urls))
+        return asyncio.run_coroutine_threadsafe(future, loop).result()
+    else:
+        # Normal Python script
+        return asyncio.run(scrape_properties(urls))
 
 
-if __name__ == "__main__":
-    asyncio.run(run())
+def parse_price_pcm(price_str):
+    """
+    Convert a price string like '£2,362 pcm' to a numeric monthly value (float).
+    Always assumes prices are per calendar month (pcm).
+    Returns None if parsing fails.
+    """
+    if not isinstance(price_str, str):
+        return None
 
+    match = re.search(r'[\d,]+(?:\.\d+)?', price_str)
+    if not match:
+        return None
+
+    return float(match.group().replace(',', ''))
+
+
+
+def to_property_dicts(scraped_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """
+    Convert scraped Rightmove property JSON into a list of property dictionaries.
+
+    Returns a list of dicts ready for JSON serialization or DataFrame creation.
+    """
+    properties = []
+
+    for item in scraped_data:
+        address = item.get("address", {}).get("displayAddress")
+        bedrooms = item.get("bedrooms")
+        bathrooms = item.get("bathrooms")
+        price_str = item.get("prices", {}).get("primaryPrice")
+        url = item.get("url")
+
+        price = parse_price_pcm(price_str)
+        expected_rent = round(price * random.uniform(0.9, 1.1), 1) if price else None
+
+        properties.append({
+            "displayAddress": address,
+            "bedrooms": bedrooms,
+            "bathrooms": bathrooms,
+            "Rent (£/pcm)": price,
+            "expectedRent (£/pcm)": expected_rent,
+            "url": url
+        })
+
+    return properties
