@@ -143,29 +143,39 @@ async def scrape_properties(urls: List[str]) -> List[Dict[str, Any]]:
 #         # Normal Python script
 #         return asyncio.run(scrape_properties(urls))
 #
+import asyncio
+import nest_asyncio
+
 def run_scraper_safe(urls):
     """
-    Safely run the async scrape_properties() function on Hugging Face Spaces.
+    Safely run the async scrape_properties() function locally and on Hugging Face Spaces.
+    Handles both normal and already-running event loop cases.
     """
+    if not urls:
+        return []
+
     try:
-        # Try the standard approach first
+        # Works in normal Python environments
         return asyncio.run(scrape_properties(urls))
     except RuntimeError as e:
-        if "cannot be called from a running event loop" in str(e):
-            # Handle case where event loop is already running
+        # Happens inside Spaces/Streamlit ("event loop is running")
+        if "running event loop" in str(e) or "asyncio.run()" in str(e):
             try:
+                nest_asyncio.apply()
                 loop = asyncio.get_event_loop()
-                if loop.is_running():
-                    # Create new event loop for this operation
-                    import nest_asyncio
-                    nest_asyncio.apply()
-                    return loop.run_until_complete(scrape_properties(urls))
-            except:
-                # Fallback: use a new event loop
-                loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(loop)
                 return loop.run_until_complete(scrape_properties(urls))
-        raise
+            except Exception as inner_e:
+                print(f"⚠️ Inner event-loop error: {inner_e}")
+                # As a last resort, create a new loop
+                new_loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(new_loop)
+                return new_loop.run_until_complete(scrape_properties(urls))
+        else:
+            print(f"⚠️ Unexpected RuntimeError: {e}")
+            return []
+    except Exception as e:
+        print(f"⚠️ run_scraper_safe general error: {e}")
+        return []
 
 
 def parse_price_pcm(price_str):
