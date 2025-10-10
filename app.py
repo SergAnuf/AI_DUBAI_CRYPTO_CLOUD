@@ -52,6 +52,7 @@ for i, msg in enumerate(st.session_state.messages):
             render_thumbs(i)
 
 if len(st.session_state.messages) == 0:
+
     st.markdown(
         """
         <div style='text-align: center; padding: 8px 0;'>
@@ -64,31 +65,38 @@ if len(st.session_state.messages) == 0:
         unsafe_allow_html=True
     )
 
+    # --- Top Large Image ---
+    st.markdown("<br>", unsafe_allow_html=True)  # spacing between title and top image
+    col_center = st.columns([0.5, 2, 0.5])[1]  # center the top image
+
+    with col_center:
+        st.markdown(
+            "<p style='text-align:center; font-size:26px; font-weight:600;'>🏘️ Estimate property prices by prompting their URL</p>",
+            unsafe_allow_html=True,
+        )
+        st.image("assets/ai_price.png", use_container_width=True, output_format="PNG", caption=None)
+
+    # Add spacing before next row
+    st.markdown("<div style='height: 30px;'></div>", unsafe_allow_html=True)
+
+    # --- Three Smaller Images Below ---
     cols = st.columns(3)
     img_style = {"use_container_width": True}
 
-    with cols[0]:
-        st.markdown(
-            "<p style='text-align:center; font-size:25px; font-weight:500;'>📊 View property/data tables</p>",
-            unsafe_allow_html=True,
-        )
-        st.image("assets/pic3.png", **img_style)
-
-    with cols[1]:
-        st.markdown(
-            "<p style='text-align:center; font-size:25px; font-weight:500;'>🗺️ Show properties on maps</p>",
-            unsafe_allow_html=True,
-        )
-        st.image("assets/pic1.png", **img_style)
-
-    with cols[2]:
-        st.markdown(
-            "<p style='text-align:center; font-size:25px; font-weight:500;'>📈 Generate rent analytics plots</p>",
-            unsafe_allow_html=True,
-        )
-        st.image("assets/pic2.png", **img_style)
+    for i, (caption, img) in enumerate([
+        ("📊 View property/data tables", "assets/pic3.png"),
+        ("🗺️ Show properties on maps", "assets/pic1.png"),
+        ("📈 Generate rent analytics plots", "assets/pic2.png"),
+    ]):
+        with cols[i]:
+            st.markdown(
+                f"<p style='text-align:center; font-size:22px; font-weight:600;'>{caption}</p>",
+                unsafe_allow_html=True,
+            )
+            st.image(img, width=500)  # smaller than full container width for subtle shrink
 
     st.markdown("<hr style='margin: 5px 0;'>", unsafe_allow_html=True)
+
 
 # -------------------
 # User Input
@@ -193,6 +201,15 @@ if query:
             st.session_state.messages.append(
                 {"role": "assistant", "content": "❌ Failed to display properties on Google Maps."}
             )
+    # -------------
+    # Properties valuation results,
+    # These are not added to the chat history
+    # -------------
+    elif result_type == "pricing_data":
+        st.success("Here are your properties valuations:")
+        df = pd.DataFrame(result["data"])
+        st.dataframe(df, use_container_width=True)
+
     # -------------
     # Unexpected result type
     # -------------
