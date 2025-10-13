@@ -6,6 +6,7 @@ from collections import deque
 from src.agent import main_agent
 from src.tools import contextualize_query
 
+print("hello world")
 # -------------------
 # Streamlit Page Setup
 # -------------------
