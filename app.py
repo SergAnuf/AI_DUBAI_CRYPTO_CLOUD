@@ -64,38 +64,21 @@ if len(st.session_state.messages) == 0:
         unsafe_allow_html=True
     )
 
-    # --- Define the slides ---
+    # --- Define slides ---
     slides = [
-        {
-            "title": "🏘️ Estimate property prices by prompting their URL",
-            "image": "assets/ai_price.png",
-            "width": 1500,  # first image larger
-        },
-        {
-            "title": "📊 View property/data tables",
-            "image": "assets/pic3.png",
-            "width": 550,
-        },
-        {
-            "title": "🗺️ Show properties on maps",
-            "image": "assets/pic1.png",
-            "width": 550,
-        },
-        {
-            "title": "📈 Generate rent analytics plots",
-            "image": "assets/pic2.png",
-            "width": 550,
-        },
+        {"title": "🏘️ Estimate property prices by prompting their URL", "image": "assets/ai_price.png", "width": 1500},
+        {"title": "📊 View property/data tables", "image": "assets/pic3.png", "width": 550},
+        {"title": "🗺️ Show properties on maps", "image": "assets/pic1.png", "width": 550},
+        {"title": "📈 Generate rent analytics plots", "image": "assets/pic2.png", "width": 550},
     ]
 
-    # --- Keep track of current slide ---
+    # --- Slide index state ---
     if "slide_index" not in st.session_state:
         st.session_state.slide_index = 0
 
-    # --- Get current slide ---
     current_slide = slides[st.session_state.slide_index]
 
-    # --- Display content ---
+    # --- Display current slide ---
     st.markdown("<br>", unsafe_allow_html=True)
     col_center = st.columns([0.3, 2, 0.3])[1]
 
@@ -104,25 +87,21 @@ if len(st.session_state.messages) == 0:
             f"<p style='text-align:center; font-size:26px; font-weight:600;'>{current_slide['title']}</p>",
             unsafe_allow_html=True,
         )
-
-        # Center image with specific width
         st.markdown("<div style='display:flex; justify-content:center;'>", unsafe_allow_html=True)
-        st.image(
-            current_slide["image"],
-            width=current_slide["width"],
-            caption=None,
-            output_format="PNG"
-        )
+        st.image(current_slide["image"], width=current_slide["width"])
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # --- Navigation buttons ---
-    col_prev, col_next = st.columns([1, 1])
+    # --- Properly centered navigation buttons ---
+    st.markdown("<div style='height:15px;'></div>", unsafe_allow_html=True)
+    col_spacer, col_prev, col_next, col_spacer2 = st.columns([3, 1, 1, 3])
+
     with col_prev:
-        if st.button("⬅️ Previous"):
+        if st.button("⬅️ Previous", use_container_width=True):
             st.session_state.slide_index = (st.session_state.slide_index - 1) % len(slides)
             st.rerun()
+
     with col_next:
-        if st.button("Next ➡️"):
+        if st.button("Next ➡️", use_container_width=True):
             st.session_state.slide_index = (st.session_state.slide_index + 1) % len(slides)
             st.rerun()
 
@@ -131,8 +110,8 @@ if len(st.session_state.messages) == 0:
         f"<p style='text-align:center; color:grey;'>Slide {st.session_state.slide_index + 1} of {len(slides)}</p>",
         unsafe_allow_html=True,
     )
-
     st.markdown("<hr style='margin: 10px 0;'>", unsafe_allow_html=True)
+
 
 
 # -------------------
