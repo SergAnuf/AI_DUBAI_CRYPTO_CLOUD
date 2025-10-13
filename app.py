@@ -84,7 +84,7 @@ if len(st.session_state.messages) == 0:
     img_style = {"use_container_width": True}
 
     for i, (caption, img) in enumerate([
-        ("📊 View property/data tables", "assets/pic3.png"),
+        ("📊 View property/data tables, hello world", "assets/pic3.png"),
         ("🗺️ Show properties on maps", "assets/pic1.png"),
         ("📈 Generate rent analytics plots", "assets/pic2.png"),
     ]):
