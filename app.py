@@ -6,7 +6,6 @@ from collections import deque
 from src.agent import main_agent
 from src.tools import contextualize_query
 
-print("hello world")
 # -------------------
 # Streamlit Page Setup
 # -------------------
@@ -52,8 +51,11 @@ for i, msg in enumerate(st.session_state.messages):
         if msg["role"] == "assistant":
             render_thumbs(i)
 
-if len(st.session_state.messages) == 0:
 
+
+
+
+if len(st.session_state.messages) == 0:
     st.markdown(
         """
         <div style='text-align: center; padding: 8px 0;'>
@@ -66,37 +68,77 @@ if len(st.session_state.messages) == 0:
         unsafe_allow_html=True
     )
 
-    # --- Top Large Image ---
-    st.markdown("<br>", unsafe_allow_html=True)  # spacing between title and top image
-    col_center = st.columns([0.5, 2, 0.5])[1]  # center the top image
+    # --- Define slides ---
+    slides = [
+        {
+            "title": "🏘️ Estimate property prices by prompting their URL",
+            "images": ["assets/ai_price.png"],  # one large image
+            "widths": [1500],
+        },
+        {
+            "title": "📊 View property/data tables",
+            "images": ["assets/pic3.png", "assets/pic1.png"],  # two side-by-side
+            "widths": [550, 550],
+        },
+        {
+            "title": "🗺️ Show properties on maps",
+            "images": ["assets/pic1.png", "assets/pic2.png"],
+            "widths": [550, 550],
+        },
+        {
+            "title": "📈 Generate rent analytics plots",
+            "images": ["assets/pic2.png", "assets/pic3.png"],
+            "widths": [550, 550],
+        },
+    ]
 
-    with col_center:
-        st.markdown(
-            "<p style='text-align:center; font-size:26px; font-weight:600;'>🏘️ Estimate property prices by prompting their URL</p>",
-            unsafe_allow_html=True,
-        )
-        st.image("assets/ai_price.png", use_container_width=True, output_format="PNG", caption=None)
+    # --- Track current slide ---
+    if "slide_index" not in st.session_state:
+        st.session_state.slide_index = 0
+    current_slide = slides[st.session_state.slide_index]
 
-    # Add spacing before next row
-    st.markdown("<div style='height: 30px;'></div>", unsafe_allow_html=True)
+    # --- Title ---
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown(
+        f"<p style='text-align:center; font-size:26px; font-weight:600;'>{current_slide['title']}</p>",
+        unsafe_allow_html=True,
+    )
 
-    # --- Three Smaller Images Below ---
-    cols = st.columns(3)
-    img_style = {"use_container_width": True}
+    # --- Display images ---
+    if len(current_slide["images"]) == 1:
+        # --- Single large centered image ---
+        col_left, col_img, col_right = st.columns([0.2, 2.6, 0.2])
+        with col_img:
+            st.image(current_slide["images"][0], width=current_slide["widths"][0])
+    else:
+        # --- Two images side-by-side ---
+        col_left, col1, col2, col_right = st.columns([0.5, 1.5, 1.5, 0.5])
+        with col1:
+            st.image(current_slide["images"][0], width=current_slide["widths"][0])
+        with col2:
+            st.image(current_slide["images"][1], width=current_slide["widths"][1])
 
-    for i, (caption, img) in enumerate([
-        ("📊 View property/data tables, hello world", "assets/pic3.png"),
-        ("🗺️ Show properties on maps", "assets/pic1.png"),
-        ("📈 Generate rent analytics plots", "assets/pic2.png"),
-    ]):
-        with cols[i]:
-            st.markdown(
-                f"<p style='text-align:center; font-size:22px; font-weight:600;'>{caption}</p>",
-                unsafe_allow_html=True,
-            )
-            st.image(img, width=500)  # smaller than full container width for subtle shrink
+    # --- Navigation buttons (centered) ---
+    st.markdown("<div style='height:20px;'></div>", unsafe_allow_html=True)
+    col_spacer, col_prev, col_next, col_spacer2 = st.columns([3, 1, 1, 3])
 
-    st.markdown("<hr style='margin: 5px 0;'>", unsafe_allow_html=True)
+    with col_prev:
+        if st.button("⬅️ Previous", use_container_width=True):
+            st.session_state.slide_index = (st.session_state.slide_index - 1) % len(slides)
+            st.rerun()
+    with col_next:
+        if st.button("Next ➡️", use_container_width=True):
+            st.session_state.slide_index = (st.session_state.slide_index + 1) % len(slides)
+            st.rerun()
+
+    # --- Progress indicator ---
+    st.markdown(
+        f"<p style='text-align:center; color:grey;'>Slide {st.session_state.slide_index + 1} of {len(slides)}</p>",
+        unsafe_allow_html=True,
+    )
+    st.markdown("<hr style='margin: 10px 0;'>", unsafe_allow_html=True)
+
+
 
 
 # -------------------
