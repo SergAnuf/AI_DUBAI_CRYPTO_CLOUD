@@ -22,3 +22,4 @@ jobs:
           git config user.name "GitHub Actions"
           git remote add space https://huggingface.co/spaces/servisgas/chatbot
           git push --force https://zcemg08:$HF_TOKEN@huggingface.co/spaces/servisgas/chatbot HEAD:main
+
