@@ -77,18 +77,18 @@ if len(st.session_state.messages) == 0:
         },
         {
             "title": "📊 View property/data tables",
-            "images": ["assets/pic3.png", "assets/pic1.png"],  # two side-by-side
+            "images": ["assets/pic3.png", "assets/flats_lewisham.png"],  # two side-by-side
             "widths": [550, 550],
         },
         {
             "title": "🗺️ Show properties on maps",
-            "images": ["assets/pic1.png", "assets/pic2.png"],
+            "images": ["assets/pic1.png", "assets/stations_map.png"],
             "widths": [550, 550],
         },
         {
             "title": "📈 Generate rent analytics plots",
-            "images": ["assets/pic2.png", "assets/pic3.png"],
-            "widths": [550, 550],
+            "images": ["assets/times_series.png"],
+            "widths": [1500],
         },
     ]
 
