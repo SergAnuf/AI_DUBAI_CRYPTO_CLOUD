@@ -12,7 +12,7 @@ from src.tools import contextualize_query
 st.set_page_config(page_title="London Real Estate Chat", layout="wide")
 
 # --- Header Layout ---
-col1, col2 = st.columns([3, 1])  # title on the left, contacts on the right
+col1, col2 = st.columns([3, 1])
 
 with col1:
     st.markdown(
@@ -21,9 +21,10 @@ with col1:
     )
 
 with col2:
+    st.markdown("", unsafe_allow_html=True)
     st.markdown(
         """
-        <div style='line-height:1.6; font-size:18px; text-align:right;'>
+        <div style='color:white; line-height:1.6; font-size:25px; text-align:right;'>
             <strong>Dr. Sergii Anufriiev</strong><br>
             <a href='mailto:anufriiev.sergii@gmail.com'>anufriiev.sergii@gmail.com</a><br>
             <strong>Dr. Georgios Giasemidis</strong><br>
