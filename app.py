@@ -11,7 +11,27 @@ from src.tools import contextualize_query
 # -------------------
 st.set_page_config(page_title="London Real Estate Chat", layout="wide")
 
-st.markdown("<h1 style='font-size: 40px;'>🏠 London Real Estate Chat Assistant</h1>", unsafe_allow_html=True)
+# --- Header Layout ---
+col1, col2 = st.columns([3, 1])  # title on the left, contacts on the right
+
+with col1:
+    st.markdown(
+        "<h1 style='font-size: 40px;'>🏠 London Real Estate Chat Assistant</h1>",
+        unsafe_allow_html=True
+    )
+
+with col2:
+    st.markdown(
+        """
+        <div style='line-height:1.6; font-size:18px; text-align:right;'>
+            <strong>Dr. Sergii Anufriiev</strong><br>
+            <a href='mailto:anufriiev.sergii@gmail.com'>anufriiev.sergii@gmail.com</a><br>
+            <strong>Dr. Georgios Giasemidis</strong><br>
+            <a href='mailto:g.giasemidis@gmail.com'>g.giasemidis@gmail.com</a>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 # -------------------
 # Session State Setup
