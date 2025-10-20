@@ -177,7 +177,7 @@ if query:
 
     final_query = contextualize_query(query, history=st.session_state.messages)
     # For debugging only
-    # st.caption(f"Contextualized query → {final_query}")
+    st.caption(f"Contextualized query → {final_query}")
 
     with st.spinner("Processing your query..."):
         result = main_agent(final_query)
@@ -198,9 +198,12 @@ if query:
     # -------------
     elif result_type == "message":
         st.info(result["message"])
-        st.session_state.messages.append(
+        if result["message"] == "This is an irrelevant question to London property.":
+            st.session_state.messages.pop()
+        else:
+            st.session_state.messages.append(
             {"role": "assistant", "content": result["message"]}
-        )
+            )
 
     # -------------
     # Dataframe result ✅ (logic-based)
