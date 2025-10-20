@@ -7,27 +7,41 @@ with open("datasets/new-bot/rental-data-london3/schema.yaml", "r") as f:
 
 
 def format_query_with_table_output(original_query: str, action: str) -> str:
-    # TODO : since we know the type of question asked we can modify the query which is submitted to pandasAI
+    """
+    Formats the user query with strict table output instructions.
+    Adds extra guidance for geospatial queries so PandasAI can handle distance-based
+    questions correctly without causing SQL execution errors in DuckDB.
+    """
 
-    table_format_instruction_geo = """
+    # --- Shared instruction ---
+    base_instruction = """
       Output format requirement:
       - Present all results strictly as a table (rows and columns).
-      - Do not return pictures, charts or maps
+      - Do not return pictures, charts, or maps.
       - If there is only one value, still return it as a one-row, one-column table.
       - Use clear column headers.
-      - If properties returned always include: id column."""
+      - Price sort always comes latest
+    """
 
-    table_format_instruction_other = """
-      Output format requirement:
-      - Present all results strictly as a table (rows and columns).
-      - Do not return pictures, charts or maps
-      - If there is only one value, still return it as a one-row, one-column table.
-      - Use clear column headers."""
-
+    # --- Geospatial extension ---
+    geo_extension = """
+      Geospatial rule:
+      - If the user query mentions proximity (e.g. “closest to”, “near”, or “distance from” a place or station):
+          * Identify the place or station name from the query (e.g. “Camden Town Station”).
+          * Retrieve its geographic coordinates (latitude, longitude) if available.
+          * Fetch relevant data using a standard SQL query — do NOT compute distances directly in SQL.
+          * Do not add arbitrary SQL LIMITs
+          * After fetching the data, compute the geographic distance in Python using latitude and longitude columns
+            (for example, with the Haversine formula).
+          * Sort the results by this computed distance in ascending order.
+          * Never call or define a Haversine or trigonometric function inside SQL.
+      - Always include the 'id' column if properties are returned.
+    """
+    # --- Combine instructions based on action type ---
     if action == "geospatial_plot":
-        return original_query.strip() + "\n\n" + table_format_instruction_geo
+        return original_query.strip() + "\n\n" + base_instruction + geo_extension
     else:
-        return original_query.strip() + "\n\n" + table_format_instruction_other
+        return original_query.strip() + "\n\n" + base_instruction
 
 
 

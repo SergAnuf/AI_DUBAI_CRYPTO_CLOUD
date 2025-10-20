@@ -191,7 +191,7 @@ def contextualize_query(query: str, history: Union[deque, list]) -> str:
     code_prompt = f"""
     You are a query rewriter for a London real estate chatbot focused on rental properties.
     Rewrite the latest user request into a complete, standalone query
-    that makes sense without relying on the conversation history.
+    that makes sense relying on the conversation history.
     Always phrase the query in terms of renting property in London.
     Never ignore the price information if provided.
 

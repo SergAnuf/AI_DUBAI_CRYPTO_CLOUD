@@ -68,6 +68,7 @@ def main_agent(query: str):
                 "solution": data_dict.get("solution")}
 
     results = data_dict.get("result", [])
+    print(len(results))
 
     # Step 4: Normalize results.
     # Ensure results are in a consistent format for further processing.
