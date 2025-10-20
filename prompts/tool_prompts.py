@@ -20,7 +20,6 @@ def format_query_with_table_output(original_query: str, action: str) -> str:
       - Do not return pictures, charts, or maps.
       - If there is only one value, still return it as a one-row, one-column table.
       - Use clear column headers.
-      - Price sort always comes latest
     """
 
     # --- Geospatial extension ---
@@ -35,6 +34,7 @@ def format_query_with_table_output(original_query: str, action: str) -> str:
             (for example, with the Haversine formula).
           * Sort the results by this computed distance in ascending order.
           * Never call or define a Haversine or trigonometric function inside SQL.
+          * Price sort always comes latest
       - Always include the 'id' column if properties are returned.
     """
     # --- Combine instructions based on action type ---
