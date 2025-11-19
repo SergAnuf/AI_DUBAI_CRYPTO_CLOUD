@@ -1,9 +1,10 @@
-import asyncio
 import json
 import os
 from typing import List, Dict, Any
 import re
 import random
+import asyncio
+import nest_asyncio
 
 from scrapfly import ScrapflyClient, ScrapeApiResponse, ScrapeConfig
 from dotenv import load_dotenv
@@ -94,6 +95,7 @@ def parse_property(data: Dict[str, Any]) -> Dict[str, Any]:
         "bathrooms": data.get("bathrooms"),
         "propertySubType": data.get("propertySubType"),
         "images": [img.get("srcUrl") for img in data.get("images", []) if img.get("srcUrl")],
+        "propertyType": data.get("propertySubType"),
         "agent": {
             "name": data.get("customer", {}).get("branchDisplayName"),
             "branch_id": data.get("customer", {}).get("branchId"),
@@ -120,31 +122,6 @@ async def scrape_properties(urls: List[str]) -> List[Dict[str, Any]]:
             results.append(parsed)
     return results
 
-# ---------------------
-# Test run
-# ---------------------
-#
-# def run_scraper_safe(urls):
-#     """
-#     Safely run the async scrape_properties() function from both
-#     sync and async environments. Returns scraped data.
-#     """
-#     try:
-#         loop = asyncio.get_running_loop()
-#     except RuntimeError:
-#         loop = None
-#
-#     if loop and loop.is_running():
-#         # Already inside an async loop (e.g. Streamlit or FastAPI)
-#         # -> schedule and await manually
-#         future = asyncio.ensure_future(scrape_properties(urls))
-#         return asyncio.run_coroutine_threadsafe(future, loop).result()
-#     else:
-#         # Normal Python script
-#         return asyncio.run(scrape_properties(urls))
-#
-import asyncio
-import nest_asyncio
 
 def run_scraper_safe(urls):
     """
@@ -220,3 +197,6 @@ def to_property_dicts(scraped_data: List[Dict[str, Any]]) -> List[Dict[str, Any]
                 "url": url
             })
     return properties
+
+
+print(asyncio.run(scrape_properties(["https://www.rightmove.co.uk/properties/169468094#/?channel=RES_LET"])))
