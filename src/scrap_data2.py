@@ -36,7 +36,6 @@ def detect_rightmove_links(query: str):
     else:
        return []
 
-
 # -------------------------------------------------------
 # JSON MINING — finds *any* JSON block with property data
 # -------------------------------------------------------
@@ -113,9 +112,7 @@ async def scrape_properties(urls: List[str]) -> List[Dict[str, Any]]:
 
     async for result in scrapfly.concurrent_scrape(tasks):
         html = result.content
-        print(html)
         raw_data = extract_property_json(html)
-        # print(raw_data)
         if raw_data:
             results.append(parse_property(raw_data))
 
@@ -135,46 +132,46 @@ def run_scraper_safe(urls: List[str]):
         return loop.run_until_complete(scrape_properties(urls))
 
 
-
 def parse_property(data: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Returns ONLY the variables needed for ML modelling.
-    Automatically repairs missing / bad categorical values.
-    """
 
     desc = (data.get("text", {}).get("description") or "").lower()
     phrase = (data.get("text", {}).get("propertyPhrase") or "").lower()
 
-    # Raw scraper fields (scraper returns simplified keys)
-    let_raw = data.get("lettingType")
-    furn_raw = data.get("furnishTypes")
+    # Correct fields from Rightmove JSON
+    lettings = data.get("lettings", {})
+
+    let_raw = lettings.get("letType")
+    furn_raw = lettings.get("furnishType")
+    deposit_raw = lettings.get("deposit")
     prop_raw = data.get("propertyType")
-    deposit_raw = data.get("deposit")  # Scraper does not provide this
+
     bedrooms = data.get("bedrooms")
     bathrooms = data.get("bathrooms")
-    latitude = data.get("latitude")
-    longitude = data.get("longitude")
+
+    latitude = data.get("location", {}).get("latitude")
+    longitude = data.get("location", {}).get("longitude")
 
     # ------------ Fix letType ------------
-    if not let_raw or let_raw == LETTING_TYPES_EXCEPTION:
-        if data.get("prices", {}).get("primaryPrice"):
-            let_raw = "Long term"
+    if not let_raw:
+        let_raw = "Long term" if data.get("prices", {}).get("primaryPrice") else None
     let_type = normalize_category(let_raw, LETTING_TYPES, LETTING_TYPES_EXCEPTION)
 
     # ------------ Fix furnishType ------------
-    if not furn_raw or furn_raw == FURNISH_TYPES_EXCEPTION:
+    if not furn_raw:
         if "furnished" in desc:
             furn_raw = "Furnished"
         elif "unfurnished" in desc:
             furn_raw = "Unfurnished"
+
     furnish_type = normalize_category(furn_raw, FURNISH_TYPES, FURNISH_TYPES_EXCEPTION)
 
     # ------------ Fix propertyType ------------
-    if not prop_raw or prop_raw == PROPERTY_TYPES_EXCEPTION:
+    if not prop_raw:
         if "apartment" in phrase or "apartment" in desc:
             prop_raw = "Apartment"
         elif "flat" in phrase or "flat" in desc:
             prop_raw = "Flat"
+
     property_type = normalize_category(prop_raw, PROPERTY_TYPES, PROPERTY_TYPES_EXCEPTION)
 
     return {
@@ -182,7 +179,7 @@ def parse_property(data: Dict[str, Any]) -> Dict[str, Any]:
         "bedrooms": bedrooms,
         "bathrooms": bathrooms,
         "propertyType": property_type,
-        "deposit": deposit_raw,        # scraper does not extract deposit
+        "deposit": deposit_raw,
         "letType": let_type,
         "furnishType": furnish_type,
         "latitude": latitude,
@@ -190,10 +187,7 @@ def parse_property(data: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-dictionary_list = run_scraper_safe(["https://www.rightmove.co.uk/properties/78286248#/?channel=RES_LET"])
+dictionary_list = run_scraper_safe(["https://www.rightmove.co.uk/properties/169513070#/?channel=RES_LET"])
 
 # Extract the first (and only) property JSON
-dictionary = dictionary_list[0]
-# print(dictionary)
-# Parse it
-print(parse_property(dictionary))
+print(dictionary_list[0])
