@@ -1,9 +1,10 @@
 from src.tools import safe_dataframe_tool, create_plotly_code
 from src.classifiers import llm_classifier, is_uae_real_estate_query
 from src.geo_tools import generate_google_maps_html
-from src.scrap_data import run_scraper_safe, detect_rightmove_links,to_property_dicts
+from src.scrap_data2 import run_scraper_safe, detect_rightmove_links,to_model_outputs
 import json
 
+API_URL = "https://servisgas-pricing.hf.space/explain"
 
 def safe_user_query(q: str) -> str:
     """
@@ -38,8 +39,11 @@ def main_agent(query: str):
     print("Detected URLs:", len(urls))
     if len(urls)>0:
         try:
+            # scraped_data = run_scraper_safe(urls)
+            # data = to_property_dicts(scraped_data)
             scraped_data = run_scraper_safe(urls)
-            data = to_property_dicts(scraped_data)
+            data = to_model_outputs(scraped_data[0])
+
             return {"type": "pricing_data", "data": data}
         except:
             return {"type": "message",

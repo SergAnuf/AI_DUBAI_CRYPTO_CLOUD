@@ -187,7 +187,18 @@ def parse_property(data: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-dictionary_list = run_scraper_safe(["https://www.rightmove.co.uk/properties/169513070#/?channel=RES_LET"])
+def to_model_outputs(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Convert property data to model input format."""
+    API_URL = "https://servisgas-pricing.hf.space/explain"
 
-# Extract the first (and only) property JSON
-print(dictionary_list[0])
+    payload = {"model_params": data}
+    response = requests.post(API_URL, json=payload)
+
+    return response.json()
+
+
+
+# dictionary_list = run_scraper_safe(["https://www.rightmove.co.uk/properties/169513070#/?channel=RES_LET"])
+#
+# # Extract the first (and only) property JSON
+# print(dictionary_list[0])

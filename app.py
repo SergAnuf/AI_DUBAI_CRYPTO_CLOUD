@@ -2,6 +2,9 @@ import streamlit as st
 import streamlit.components.v1 as components
 import pandas as pd
 from collections import deque
+import shap
+import numpy as np
+import matplotlib.pyplot as plt
 
 from src.agent import main_agent
 from src.tools import contextualize_query
@@ -274,8 +277,50 @@ if query:
     # -------------
     elif result_type == "pricing_data":
         st.success("Here are your properties valuations:")
-        df = pd.DataFrame(result["data"])
-        st.dataframe(df, use_container_width=True)
+        model_response = result["data"]
+        features_df = pd.DataFrame(model_response["data"])  # single-row DF
+        shap_values_raw = np.array(model_response["shap_values"])  # shape: (1, n_features)
+        feature_names = model_response["feature_names"]
+        base_value = model_response["base_value"]
+        prediction = model_response["prediction"]
+
+        # 2. Put into SHAP Explanation object
+        expl = shap.Explanation(
+            values=shap_values_raw[0],
+            base_values=base_value,
+            data=features_df[feature_names].iloc[0].to_numpy(),
+            feature_names=feature_names
+        )
+
+        # ----------------------------
+        # STREAMLIT DISPLAY
+        # ----------------------------
+
+        st.subheader("Model Input Features")
+        st.dataframe(features_df, use_container_width=True)
+
+        st.subheader("Prediction")
+        st.metric("Predicted Rent", f"£{prediction:,.0f}")
+
+        st.subheader("SHAP Feature Contributions")
+
+        # Force Plot
+        st.markdown("### Force Plot")
+        fig_force = shap.force_plot(
+            base_value,
+            shap_values_raw,
+            features_df[feature_names],
+            matplotlib=True,
+            show=False,
+            contribution_threshold=0.1
+        )
+        st.pyplot(fig_force)
+
+        # Bar Plot (feature importance)
+        st.markdown("### Variable Contribution Plot (GBP)")
+        fig_bar, ax = plt.subplots()
+        shap.plots.bar(expl, show=False)
+        st.pyplot(fig_bar)
 
     # -------------
     # Unexpected result type
